@@ -1,7 +1,7 @@
 {
   "gameTitle": "Spyro Heardle",
   "repoBaseUrl": "",
-  "startDate": "2026-04-02",
+  "startDate": "2026-04-01",
   "timezone": "America/Los_Angeles",
   "songs": [
     "Spyro the Dragon - Artisans",
@@ -97,7 +97,7 @@
   "puzzles": [
     {
       "day": 1,
-      "answer": "Spyro the Dragon: Dream Weavers",
+      "answer": "Spyro the Dragon - Dream Weavers",
       "audioFolder": "audio/dream-weavers",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },

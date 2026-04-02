@@ -1,6 +1,13 @@
+/* ============================================================
+   SPYRO HEARDLE — game.js
+   Core game logic, audio, autocomplete, sharing
+   ============================================================ */
+
+// ── Constants ──────────────────────────────────────────────
 const CONFIG_URL  = 'config.json';
 const STORAGE_KEY = 'spyro-heardle-state';
 
+// Emoji scheme
 const EMOJI = {
   skip:    '⚪',
   wrong:   '🟥',
@@ -395,6 +402,107 @@ function loadStateForDay(day) {
   return all[day] || null;
 }
 
+// ── Streak tracking ────────────────────────────────────────
+
+const STREAK_KEY = 'spyro-heardle-streak';
+
+function loadStreak() {
+  try { return JSON.parse(localStorage.getItem(STREAK_KEY)) || { current: 0, lastWonDay: null }; }
+  catch { return { current: 0, lastWonDay: null }; }
+}
+
+function saveStreak(data) {
+  localStorage.setItem(STREAK_KEY, JSON.stringify(data));
+}
+
+function updateStreak(won) {
+  const streak = loadStreak();
+  if (won) {
+    // Extend streak if last win was the previous day, or this is the first
+    const prevDay = dayNumber - 1;
+    if (streak.lastWonDay === prevDay || streak.lastWonDay === null) {
+      streak.current += 1;
+    } else if (streak.lastWonDay === dayNumber) {
+      // Already recorded for today (restore case), don't double-count
+    } else {
+      streak.current = 1; // broke streak, restart
+    }
+    streak.lastWonDay = dayNumber;
+  } else {
+    // Loss — reset streak unless already recorded
+    if (streak.lastWonDay !== dayNumber) {
+      streak.current = 0;
+    }
+  }
+  saveStreak(streak);
+  return streak;
+}
+
+// ── Confetti ───────────────────────────────────────────────
+
+function launchConfetti(isDragon) {
+  const canvas = $('confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = isDragon
+    ? ['#f0b429', '#ff6a1a', '#ffd97a', '#ff9a55', '#c8820a']  // gold/fire for dragon
+    : ['#9b59f5', '#6b35c8', '#f0b429', '#c99ef7', '#ff6a1a', '#a855f7']; // purple/gold normally
+
+  const pieces = Array.from({ length: isDragon ? 160 : 100 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -10 - Math.random() * 200,
+    w: 6 + Math.random() * 8,
+    h: 3 + Math.random() * 5,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.2,
+    vx: (Math.random() - 0.5) * 3,
+    vy: 2 + Math.random() * 3,
+    opacity: 1,
+  }));
+
+  let frame;
+  let startTime = null;
+  const DURATION = isDragon ? 3200 : 2200;
+
+  function draw(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let alive = false;
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      p.vy += 0.06; // gravity
+      p.opacity = Math.max(0, 1 - (elapsed / DURATION));
+
+      if (p.y < canvas.height + 20) alive = true;
+
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+
+    if (alive && elapsed < DURATION + 1000) {
+      frame = requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cancelAnimationFrame(frame);
+    }
+  }
+
+  frame = requestAnimationFrame(draw);
+}
+
 // ── Game flow ───────────────────────────────────────────────
 
 function handleSkip() {
@@ -413,6 +521,12 @@ function handleGuess() {
     endGame(true);
   } else {
     attempts.push({ type: 'wrong', value: val });
+    // Shake the input box
+    const input = $('guessInput');
+    input.classList.remove('shake');
+    void input.offsetWidth; // force reflow to restart animation
+    input.classList.add('shake');
+    input.addEventListener('animationend', () => input.classList.remove('shake'), { once: true });
     advanceOrEnd(false);
   }
 
@@ -434,6 +548,14 @@ function advanceOrEnd(won) {
   currentStem++;
   loadStem(currentStem);
   playAudio();
+  // Pop the newly revealed stem chip
+  const chip = $(`stem-chip-${currentStem}`);
+  if (chip) {
+    chip.classList.remove('pop');
+    void chip.offsetWidth;
+    chip.classList.add('pop');
+    chip.addEventListener('animationend', () => chip.classList.remove('pop'), { once: true });
+  }
   saveState();
 }
 
@@ -454,7 +576,20 @@ function endGame(won) {
   $('resultSong').textContent = puzzle.answer;
   $('resultAttempts').textContent = emojiStr;
 
-  // Make all revealed stem chips clickable
+  // Streak
+  const streak = updateStreak(won);
+  if (won && streak.current >= 2) {
+    const sd = $('streakDisplay');
+    sd.classList.remove('hidden');
+    $('streakCount').textContent = streak.current;
+  }
+
+  // Confetti on win
+  if (won) {
+    launchConfetti(isDragon);
+  }
+
+  // Make all stem chips clickable
   makeChipsClickable();
 
   // If we're already playing the last stem (full mix), just let it keep going.
@@ -580,6 +715,13 @@ function restoreGameState(saved) {
     $('resultTitle').textContent = isDragon ? 'First Try. Too easy.' : won ? 'GG' : 'L + Ratio';
     $('resultSong').textContent = puzzle.answer;
     $('resultAttempts').textContent = emojiStr;
+    // Restore streak display if applicable
+    const streak = loadStreak();
+    if (won && streak.current >= 2 && streak.lastWonDay === dayNumber) {
+      const sd = $('streakDisplay');
+      sd.classList.remove('hidden');
+      $('streakCount').textContent = streak.current;
+    }
     // Load full mix (no autoplay on restore — user can press play)
     loadStemByIndex(puzzle.stems.length - 1, false);
     makeChipsClickable();
@@ -622,7 +764,7 @@ async function init() {
   if (!puzzle) {
     const today = getTodayPST();
     $('notUpdatedMsg').textContent =
-      `The heardle for ${formatDate(today)} hasn't been set up yet! Message @Composer to remind them :)`;
+      `The puzzle for ${formatDate(today)} hasn't been set up yet! Message @Composer to remind them :)`;
     $('notUpdated').classList.remove('hidden');
     $('gamePanel').classList.add('hidden');
     return;

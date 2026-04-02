@@ -95,15 +95,23 @@
         <h2 class="result-title" id="resultTitle"></h2>
         <p class="result-song" id="resultSong"></p>
         <div class="result-attempts" id="resultAttempts"></div>
+        <div class="streak-display hidden" id="streakDisplay">
+          <span class="streak-fire">🔥</span>
+          <span class="streak-count" id="streakCount"></span>
+          <span class="streak-label">day streak</span>
+        </div>
         <button class="btn-share" id="btnShare">Copy Result ◈</button>
         <a class="btn-archive" href="archive.html">View Archive →</a>
       </div>
+
+      <!-- Confetti canvas (full screen, pointer-events none) -->
+      <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
 
     </div>
   </main>
 
   <footer class="site-footer">
-    <p>Spyro Heardle — By: Composer</p>
+    <p>Spyro Heardle — a fan project. Spyro © Insomniac Games / Activision.</p>
   </footer>
 
   <div class="toast" id="toast"></div>
