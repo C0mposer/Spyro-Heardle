@@ -622,7 +622,7 @@ async function init() {
   if (!puzzle) {
     const today = getTodayPST();
     $('notUpdatedMsg').textContent =
-      `The puzzle for ${formatDate(today)} hasn't been set up yet! Message @Composer to remind them :)`;
+      `The heardle for ${formatDate(today)} hasn't been set up yet! Message @Composer to remind them :)`;
     $('notUpdated').classList.remove('hidden');
     $('gamePanel').classList.add('hidden');
     return;
