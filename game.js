@@ -9,9 +9,10 @@ const STORAGE_KEY = 'spyro-heardle-state';
 
 // Emoji scheme
 const EMOJI = {
-  skip:    '⚪',
+  prefix:  '🔈',
+  skip:    '⬛',
   wrong:   '🟥',
-  correct: '🟣',
+  correct: '🟩',
   dragon:  '🐉',   // correct on first guess, no skips
 };
 
@@ -19,11 +20,17 @@ const EMOJI = {
 let config       = null;
 let puzzle       = null;
 let dayNumber    = null;
-let currentStem  = 0;   // index into puzzle.stems (0 = first stem shown)
-let attempts     = [];  // array of { type: 'skip'|'wrong'|'correct', value: string }
+let currentStem  = 0;
+let attempts     = [];
 let gameOver     = false;
 let audio        = new Audio();
 let waveformBars = [];
+
+// ── Speedrun timer ──
+let timerStart    = null;   // timestamp of first play press
+let timerEnd      = null;   // timestamp of game end
+let timerInterval = null;   // live tick interval
+let timerFinalMs  = null;   // saved final elapsed ms
 
 // ── Utility ────────────────────────────────────────────────
 
@@ -119,6 +126,53 @@ async function spawnParticles() {
       container.appendChild(el);
     }
   }
+}
+
+// ── Speedrun timer ─────────────────────────────────────────
+
+function timerTick() {
+  const el = $('speedrunTimer');
+  if (!el || timerStart === null) return;
+  el.textContent = formatElapsed(Date.now() - timerStart);
+}
+
+function startTimer() {
+  if (timerStart !== null) return; // already started
+  timerStart = Date.now();
+  const el = $('speedrunTimer');
+  if (el) el.classList.remove('hidden');
+  timerInterval = setInterval(timerTick, 100);
+}
+
+function stopTimer() {
+  if (timerStart === null) return;
+  timerEnd = Date.now();
+  timerFinalMs = timerEnd - timerStart;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  // Show final time
+  const el = $('speedrunTimer');
+  if (el) el.textContent = formatElapsed(timerFinalMs);
+}
+
+function formatElapsed(ms) {
+  if (ms === null || isNaN(ms)) return '0.0s';
+  const totalSecs = ms / 1000;
+  if (totalSecs < 60) {
+    return totalSecs.toFixed(1) + 's';
+  }
+  const m = Math.floor(totalSecs / 60);
+  const s = (totalSecs % 60).toFixed(1).padStart(4, '0');
+  return `${m}m ${s}s`;
+}
+
+function formatElapsedForShare(ms) {
+  if (!ms) return null;
+  const totalSecs = ms / 1000;
+  if (totalSecs < 60) return totalSecs.toFixed(1) + 's';
+  const m = Math.floor(totalSecs / 60);
+  const s = (totalSecs % 60).toFixed(1).padStart(4, '0');
+  return `${m}m ${s}s`;
 }
 
 // ── PST date helpers ───────────────────────────────────────
@@ -301,37 +355,81 @@ function updateStemBar() {
 // ── Autocomplete ────────────────────────────────────────────
 
 function scoreMatch(query, candidate) {
-  // Returns a score 0-100; higher = better match
-  const q = query.toLowerCase();
+  const q = query.toLowerCase().trim();
   const c = candidate.toLowerCase();
-  if (c === q) return 100;
-  if (c.startsWith(q)) return 90;
-  if (c.includes(q)) return 70;
-  // subsequence scoring
-  let qi = 0;
-  let score = 0;
-  for (let ci = 0; ci < c.length && qi < q.length; ci++) {
-    if (c[ci] === q[qi]) { score += 1; qi++; }
+  if (!q) return 0;
+
+  // Split "Game Title - Song Name" into two parts
+  const dashIdx = candidate.indexOf(' - ');
+  const gamePart = dashIdx >= 0 ? c.slice(0, dashIdx).toLowerCase() : '';
+  const songPart = dashIdx >= 0 ? c.slice(dashIdx + 3).toLowerCase() : c;
+
+  // Score a single string against the query (returns 0–1)
+  function scorePart(part) {
+    if (part === q)           return 1.0;
+    if (part.startsWith(q))  return 0.95;
+    if (part.includes(' ' + q)) return 0.9;  // word boundary match
+    if (part.includes(q))    return 0.75;
+    // Subsequence: check if all query chars appear in order
+    let qi = 0;
+    let consecutive = 0, lastMatch = -1;
+    for (let ci = 0; ci < part.length && qi < q.length; ci++) {
+      if (part[ci] === q[qi]) {
+        // Bonus for consecutive chars and word-start matches
+        if (ci === lastMatch + 1) consecutive++;
+        qi++;
+        lastMatch = ci;
+      }
+    }
+    if (qi < q.length) return 0; // not all chars found
+    // Score based on how tight the match is
+    return 0.1 + (consecutive / q.length) * 0.4 + (q.length / part.length) * 0.2;
   }
-  return qi === q.length ? (score / c.length) * 50 : 0;
+
+  const songScore = scorePart(songPart);
+  const gameScore = scorePart(gamePart);
+
+  // Song title match is weighted 3x over game title match.
+  // A double match (both game + song contain the query) gets a strong bonus.
+  const doubleMatchBonus = (songScore > 0 && gameScore > 0) ? 0.25 : 0;
+  const raw = (songScore * 0.65) + (gameScore * 0.2) + doubleMatchBonus;
+
+  return raw > 0 ? raw * 100 : 0;
 }
 
 function highlightMatch(text, query) {
   if (!query) return escapeHtml(text);
+
+  const dashIdx = text.indexOf(' - ');
+  if (dashIdx < 0) {
+    // No separator — just highlight the whole string as one part
+    return highlightPart(text, query);
+  }
+
+  const gamePart = text.slice(0, dashIdx);
+  const sep      = ' - ';
+  const songPart = text.slice(dashIdx + 3);
+
+  return highlightPart(gamePart, query) + escapeHtml(sep) + highlightPart(songPart, query);
+}
+
+// Highlight all subsequence-matched characters within a single string segment
+function highlightPart(text, query) {
   const q = query.toLowerCase();
   const t = text.toLowerCase();
-  // Find subsequence positions and wrap each matching char
-  const result = [];
+  // Find subsequence match positions
+  const matchPositions = new Set();
   let qi = 0;
-  for (let i = 0; i < text.length; i++) {
-    if (qi < q.length && t[i] === q[qi]) {
-      result.push(`<span class="match-highlight">${escapeHtml(text[i])}</span>`);
-      qi++;
-    } else {
-      result.push(escapeHtml(text[i]));
-    }
+  for (let i = 0; i < t.length && qi < q.length; i++) {
+    if (t[i] === q[qi]) { matchPositions.add(i); qi++; }
   }
-  return result.join('');
+  // Only highlight if all query chars were found
+  if (qi < q.length) return escapeHtml(text);
+  return text.split('').map((ch, i) =>
+    matchPositions.has(i)
+      ? `<span class="match-highlight">${escapeHtml(ch)}</span>`
+      : escapeHtml(ch)
+  ).join('');
 }
 
 function escapeHtml(s) {
@@ -388,7 +486,7 @@ function selectSong(name) {
 
 function saveState() {
   const saved = loadAllState();
-  saved[dayNumber] = { attempts, gameOver, currentStem };
+  saved[dayNumber] = { attempts, gameOver, currentStem, timerFinalMs };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 }
 
@@ -407,8 +505,8 @@ function loadStateForDay(day) {
 const STREAK_KEY = 'spyro-heardle-streak';
 
 function loadStreak() {
-  try { return JSON.parse(localStorage.getItem(STREAK_KEY)) || { current: 0, lastWonDay: null }; }
-  catch { return { current: 0, lastWonDay: null }; }
+  try { return JSON.parse(localStorage.getItem(STREAK_KEY)) || { current: 0, best: 0, lastWonDay: null }; }
+  catch { return { current: 0, best: 0, lastWonDay: null }; }
 }
 
 function saveStreak(data) {
@@ -418,18 +516,17 @@ function saveStreak(data) {
 function updateStreak(won) {
   const streak = loadStreak();
   if (won) {
-    // Extend streak if last win was the previous day, or this is the first
     const prevDay = dayNumber - 1;
     if (streak.lastWonDay === prevDay || streak.lastWonDay === null) {
       streak.current += 1;
     } else if (streak.lastWonDay === dayNumber) {
-      // Already recorded for today (restore case), don't double-count
+      // Already recorded for today, don't double-count
     } else {
-      streak.current = 1; // broke streak, restart
+      streak.current = 1;
     }
     streak.lastWonDay = dayNumber;
+    streak.best = Math.max(streak.best || 0, streak.current);
   } else {
-    // Loss — reset streak unless already recorded
     if (streak.lastWonDay !== dayNumber) {
       streak.current = 0;
     }
@@ -511,12 +608,21 @@ function handleSkip() {
   advanceOrEnd(false);
 }
 
+function isCorrectAnswer(val) {
+  const v = val.toLowerCase();
+  if (v === puzzle.answer.toLowerCase()) return true;
+  if (Array.isArray(puzzle.alsoAccept)) {
+    return puzzle.alsoAccept.some(a => a.toLowerCase() === v);
+  }
+  return false;
+}
+
 function handleGuess() {
   if (gameOver) return;
   const val = $('guessInput').value.trim();
   if (!val) return;
 
-  if (val.toLowerCase() === puzzle.answer.toLowerCase()) {
+  if (isCorrectAnswer(val)) {
     attempts.push({ type: 'correct', value: val });
     endGame(true);
   } else {
@@ -559,8 +665,24 @@ function advanceOrEnd(won) {
   saveState();
 }
 
+function renderResultSongs() {
+  const el = $('resultSong');
+  const allAnswers = [puzzle.answer, ...(puzzle.alsoAccept || [])];
+  if (allAnswers.length === 1) {
+    // Simple case — no alsoAccept
+    el.innerHTML = escapeHtml(puzzle.answer);
+    el.classList.remove('result-song--multi');
+  } else {
+    el.classList.add('result-song--multi');
+    el.innerHTML = allAnswers
+      .map((a, i) => `<span class="result-song-entry">${i === 0 ? '🎵' : '🎵'} ${escapeHtml(a)}</span>`)
+      .join('');
+  }
+}
+
 function endGame(won) {
   gameOver = true;
+  stopTimer();
   saveState();
 
   // Hide guess area, show result
@@ -573,8 +695,15 @@ function endGame(won) {
   const isDragon = won && attempts.length === 1 && attempts[0].type === 'correct';
   $('resultEmoji').textContent = isDragon ? '🐉' : (won ? '🎉' : '💀');
   $('resultTitle').textContent = isDragon ? 'First Try. Too easy.' : won ? 'GG' : 'L + Ratio';
-  $('resultSong').textContent = puzzle.answer;
+  renderResultSongs();
   $('resultAttempts').textContent = emojiStr;
+
+  // Show final time if timer was used
+  if (timerFinalMs !== null) {
+    const rt = $('resultTime');
+    rt.classList.remove('hidden');
+    $('resultTimeValue').textContent = formatElapsed(timerFinalMs);
+  }
 
   // Streak
   const streak = updateStreak(won);
@@ -583,6 +712,9 @@ function endGame(won) {
     sd.classList.remove('hidden');
     $('streakCount').textContent = streak.current;
   }
+
+  // Countdown to next puzzle
+  startCountdown();
 
   // Confetti on win
   if (won) {
@@ -656,20 +788,20 @@ function makeChipsClickable() {
 }
 
 function buildEmojiString(won) {
-  return attempts.map((a, i) => {
-    if (a.type === 'correct') {
-      // Dragon only if first attempt
-      return (i === 0) ? EMOJI.dragon : EMOJI.correct;
-    }
-    if (a.type === 'wrong') return EMOJI.wrong;
+  const isDragon = won && attempts.length === 1 && attempts[0].type === 'correct';
+  const squares = attempts.map((a, i) => {
+    if (a.type === 'correct') return isDragon ? EMOJI.dragon : EMOJI.correct;
+    if (a.type === 'wrong')   return EMOJI.wrong;
     return EMOJI.skip;
   }).join('');
+  return EMOJI.prefix + squares;
 }
 
 function buildShareText() {
   const emojiStr = buildEmojiString(attempts.some(a => a.type === 'correct'));
   const url = buildShareUrl(dayNumber);
-  return `Spyro Heardle #${dayNumber}\n${emojiStr}\n${url}`;
+  const timePart = timerFinalMs !== null ? `⏱ ${formatElapsedForShare(timerFinalMs)}` : null;
+  return [`Spyro Heardle #${dayNumber}`, emojiStr, timePart, url].filter(Boolean).join('\n');
 }
 
 function buildShareUrl(day) {
@@ -700,9 +832,10 @@ function initShareButton() {
 // ── Restore state (for returning players) ──────────────────
 
 function restoreGameState(saved) {
-  attempts    = saved.attempts;
-  currentStem = saved.currentStem;
-  gameOver    = saved.gameOver;
+  attempts     = saved.attempts;
+  currentStem  = saved.currentStem;
+  gameOver     = saved.gameOver;
+  timerFinalMs = saved.timerFinalMs || null;
 
   if (gameOver) {
     $('guessArea').classList.add('hidden');
@@ -713,8 +846,14 @@ function restoreGameState(saved) {
     panel.classList.remove('hidden');
     $('resultEmoji').textContent = isDragon ? '🐉' : (won ? '🎉' : '💀');
     $('resultTitle').textContent = isDragon ? 'First Try. Too easy.' : won ? 'GG' : 'L + Ratio';
-    $('resultSong').textContent = puzzle.answer;
+    renderResultSongs();
     $('resultAttempts').textContent = emojiStr;
+    // Show saved time if available
+    if (timerFinalMs !== null) {
+      const rt = $('resultTime');
+      rt.classList.remove('hidden');
+      $('resultTimeValue').textContent = formatElapsed(timerFinalMs);
+    }
     // Restore streak display if applicable
     const streak = loadStreak();
     if (won && streak.current >= 2 && streak.lastWonDay === dayNumber) {
@@ -722,6 +861,8 @@ function restoreGameState(saved) {
       sd.classList.remove('hidden');
       $('streakCount').textContent = streak.current;
     }
+    // Countdown
+    startCountdown();
     // Load full mix (no autoplay on restore — user can press play)
     loadStemByIndex(puzzle.stems.length - 1, false);
     makeChipsClickable();
@@ -729,6 +870,56 @@ function restoreGameState(saved) {
     updateStemBar();
     loadStem(currentStem);
   }
+}
+
+// ── Countdown to next puzzle ────────────────────────────────
+
+let countdownInterval = null;
+
+function getMsUntilMidnightPST() {
+  const tz = (config && config.timezone) ? config.timezone : 'America/Los_Angeles';
+  const now = new Date();
+
+  // Find what "now" looks like in the target timezone as a plain date string
+  const tzDate = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+
+  // Build next midnight by zeroing out h/m/s and adding one day
+  const nextMidnight = new Date(tzDate);
+  nextMidnight.setHours(24, 0, 0, 0);
+
+  // The difference between tzDate and now tells us the tz offset
+  const tzOffset = tzDate - now;
+
+  // nextMidnight is expressed in local browser time, so adjust back
+  return (nextMidnight - tzOffset) - now;
+}
+
+function formatCountdown(ms) {
+  if (ms <= 0) return '00:00:00';
+  const totalSecs = Math.floor(ms / 1000);
+  const h = Math.floor(totalSecs / 3600);
+  const m = Math.floor((totalSecs % 3600) / 60);
+  const s = totalSecs % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function startCountdown() {
+  const el = $('countdownTimer');
+  if (!el) return;
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  function tick() {
+    const ms = getMsUntilMidnightPST();
+    el.textContent = formatCountdown(ms);
+    if (ms <= 1000) {
+      // Puzzle rolled over — reload the page
+      clearInterval(countdownInterval);
+      setTimeout(() => location.reload(), 1200);
+    }
+  }
+
+  tick();
+  countdownInterval = setInterval(tick, 1000);
 }
 
 // ── Init ───────────────────────────────────────────────────
@@ -778,7 +969,12 @@ async function init() {
 
   // Bind controls
   $('btnPlay').addEventListener('click', () => {
-    if (audio.paused) playAudio(); else pauseAudio();
+    if (audio.paused) {
+      playAudio();
+      if (!gameOver) startTimer();
+    } else {
+      pauseAudio();
+    }
   });
 
   $('btnSkip').addEventListener('click', handleSkip);

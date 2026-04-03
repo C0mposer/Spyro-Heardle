@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" href="favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spyro Heardle</title>
@@ -24,6 +25,7 @@
         <span class="title-heardle">Heardle</span>
       </h1>
       <div class="header-right">
+        <a href="stats.html" class="archive-link">Stats ◈</a>
         <span class="day-badge" id="dayBadge">#—</span>
       </div>
     </div>
@@ -58,6 +60,7 @@
             <div class="progress-fill" id="progressFill"></div>
           </div>
           <span class="time-display" id="timeDisplay">0:00</span>
+          <span class="speedrun-timer hidden" id="speedrunTimer">0.0s</span>
         </div>
         <div class="volume-row">
           <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -95,10 +98,18 @@
         <h2 class="result-title" id="resultTitle"></h2>
         <p class="result-song" id="resultSong"></p>
         <div class="result-attempts" id="resultAttempts"></div>
+        <div class="result-time hidden" id="resultTime">
+          <span class="result-time-icon">⏱</span>
+          <span class="result-time-value" id="resultTimeValue"></span>
+        </div>
         <div class="streak-display hidden" id="streakDisplay">
           <span class="streak-fire">🔥</span>
           <span class="streak-count" id="streakCount"></span>
           <span class="streak-label">day streak</span>
+        </div>
+        <div class="next-puzzle-countdown">
+          <span class="countdown-label">Next puzzle in</span>
+          <span class="countdown-timer" id="countdownTimer">—</span>
         </div>
         <button class="btn-share" id="btnShare">Copy Result ◈</button>
         <a class="btn-archive" href="archive.html">View Archive →</a>
@@ -111,7 +122,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Spyro Heardle — a fan project. Spyro © Insomniac Games / Activision.</p>
+    <p>Spyro Heardle — By: Composer</p>
   </footer>
 
   <div class="toast" id="toast"></div>

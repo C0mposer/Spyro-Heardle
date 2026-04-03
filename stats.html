@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stats — Spyro Heardle</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="bg-layer"></div>
+  <div class="gem-particles" id="gemParticles"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="archive.html" class="archive-link">◈ Previous Days</a>
+      </div>
+      <h1 class="site-title">
+        <span class="title-spyro">Spyro</span>
+        <span class="title-heardle">Heardle</span>
+      </h1>
+      <div class="header-right">
+        <a href="index.html" class="archive-link">Today ◈</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="stats-container">
+
+    <div class="stats-hero">
+      <h2 class="stats-heading">Your Stats</h2>
+      <p class="stats-sub">How well do you know music from the Spyro trilogy?</p>
+    </div>
+
+    <!-- Top summary cards -->
+    <div class="stat-cards" id="statCards">
+      <div class="stat-card">
+        <div class="stat-value" id="statPlayed">—</div>
+        <div class="stat-label">Played</div>
+      </div>
+      <div class="stat-card stat-card--gold">
+        <div class="stat-value" id="statWinPct">—</div>
+        <div class="stat-label">Win %</div>
+      </div>
+      <div class="stat-card stat-card--fire">
+        <div class="stat-value" id="statStreak">—</div>
+        <div class="stat-label">Current Streak</div>
+      </div>
+      <div class="stat-card stat-card--dragon">
+        <div class="stat-value" id="statBestStreak">—</div>
+        <div class="stat-label">Best Streak</div>
+      </div>
+    </div>
+
+    <!-- Recent results -->
+    <section class="stats-section">
+      <h3 class="stats-section-title">
+        <span class="section-icon">◈</span> Recent Results
+      </h3>
+      <p class="stats-section-sub">Your last 10 played puzzles</p>
+      <div class="recent-list" id="recentList"></div>
+    </section>
+
+    <!-- Guess distribution -->
+    <section class="stats-section">
+      <h3 class="stats-section-title">
+        <span class="section-icon">🔊</span> Guess Distribution
+      </h3>
+      <p class="stats-section-sub">Which stem you got it on</p>
+      <div class="dist-chart" id="distChart">
+        <p class="loading-text">Loading…</p>
+      </div>
+    </section>
+
+    <!-- Dragon wins -->
+    <section class="stats-section" id="dragonSection">
+      <h3 class="stats-section-title">
+        <span class="section-icon">🐉</span> First Try Guesses
+      </h3>
+      <div class="dragon-count-wrap">
+        <span class="dragon-count" id="dragonCount">—</span>
+        <span class="dragon-label">times</span>
+      </div>
+    </section>
+
+    <!-- Empty state -->
+    <div class="stats-empty hidden" id="statsEmpty">
+      <div class="empty-icon">🎵</div>
+      <h3>No games played yet!</h3>
+      <p>Head back and play today's puzzle to start building your stats.</p>
+      <a href="index.html" class="btn-play-now">Play Now →</a>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Spyro Heardle — By: Composer</p>
+  </footer>
+
+  <script src="game.js"></script>
+  <script src="stats.js"></script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validator — Spyro Heardle</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── Validator-specific styles ── */
+    .validator-container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    .validator-hero { text-align: center; margin-bottom: 2rem; }
+
+    .validator-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--purple-light) 0%, var(--gold-light) 60%, var(--fire-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+
+    .validator-sub { color: var(--text-muted); font-style: italic; }
+
+    /* Summary bar */
+    .summary-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary-pill {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1rem 0.5rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .summary-pill .pill-value {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .summary-pill .pill-label {
+      font-family: var(--font-display);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .pill--ok    { border-color: rgba(74,222,128,0.4); }
+    .pill--ok    .pill-value { color: #4ade80; }
+    .pill--warn  { border-color: rgba(240,180,41,0.4); }
+    .pill--warn  .pill-value { color: var(--gold-bright); }
+    .pill--error { border-color: rgba(217,69,0,0.5); }
+    .pill--error .pill-value { color: var(--fire-bright); }
+    .pill--info  .pill-value { color: var(--purple-light); }
+
+    /* Run button */
+    .btn-run {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, var(--purple-mid), var(--purple-bright));
+      border: none;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 20px rgba(107,53,200,0.35);
+    }
+
+    .btn-run:hover {
+      background: linear-gradient(135deg, var(--purple-bright), var(--purple-glow));
+      box-shadow: 0 6px 28px rgba(155,89,245,0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-run:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spin {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Section panel */
+    .check-section {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1rem;
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .check-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background var(--transition);
+    }
+
+    .check-section-header:hover { background: rgba(107,53,200,0.1); }
+
+    .check-section-title {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-status {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .section-badge {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      padding: 0.25em 0.7em;
+      border-radius: 100px;
+      font-weight: 700;
+    }
+
+    .badge-ok    { background: rgba(74,222,128,0.15); color: #4ade80;           border: 1px solid rgba(74,222,128,0.3); }
+    .badge-warn  { background: rgba(240,180,41,0.15); color: var(--gold-bright); border: 1px solid rgba(240,180,41,0.3); }
+    .badge-error { background: rgba(217,69,0,0.15);   color: var(--fire-bright); border: 1px solid rgba(217,69,0,0.3); }
+    .badge-info  { background: rgba(107,53,200,0.2);  color: var(--purple-light);border: 1px solid var(--border-subtle); }
+    .badge-skip  { background: var(--surface-2);      color: var(--text-muted);  border: 1px solid var(--border-subtle); }
+
+    .section-chevron {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+      margin-left: 0.5rem;
+    }
+
+    .check-section.expanded .section-chevron { transform: rotate(180deg); }
+
+    .check-section-body {
+      display: none;
+      border-top: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.25rem 1rem;
+    }
+
+    .check-section.expanded .check-section-body { display: block; }
+
+    /* Individual check rows */
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(155,89,245,0.07);
+      font-size: 0.92rem;
+    }
+
+    .check-row:last-child { border-bottom: none; }
+
+    .check-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+    .check-msg { flex: 1; color: var(--text-secondary); line-height: 1.5; }
+    .check-msg strong { color: var(--text-primary); font-style: normal; }
+    .check-msg code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      background: rgba(107,53,200,0.2);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+      color: var(--purple-light);
+    }
+
+    .check-row--ok   .check-msg { color: rgba(74,222,128,0.8); }
+    .check-row--warn .check-msg { color: var(--gold-bright); }
+    .check-row--err  .check-msg { color: var(--fire-bright); }
+    .check-row--info .check-msg { color: var(--text-secondary); }
+
+    /* Today highlight */
+    .today-highlight {
+      background: rgba(200,130,10,0.08);
+      border: 1px solid rgba(200,130,10,0.25);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .today-highlight .th-icon { font-size: 1.3rem; }
+    .today-highlight .th-text { font-size: 0.9rem; color: var(--text-secondary); }
+    .today-highlight .th-text strong { color: var(--gold-bright); }
+
+    /* Loading / idle state */
+    .idle-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .idle-state .idle-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    @media (max-width: 500px) {
+      .summary-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-layer"></div>
+  <div class="gem-particles" id="gemParticles"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="index.html" class="archive-link">◈ Today</a>
+      </div>
+      <h1 class="site-title">
+        <span class="title-spyro">Spyro</span>
+        <span class="title-heardle">Heardle</span>
+      </h1>
+      <div class="header-right">
+        <a href="stats.html" class="archive-link">Stats ◈</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="validator-container">
+
+    <div class="validator-hero">
+      <h2 class="validator-heading">⚙ Config Validator</h2>
+    </div>
+
+    <div id="todayBanner" class="today-highlight hidden">
+      <span class="th-icon">📅</span>
+      <span class="th-text" id="todayBannerText"></span>
+    </div>
+
+    <div class="summary-bar hidden" id="summaryBar">
+      <div class="summary-pill pill--info">
+        <div class="pill-value" id="sumTotal">—</div>
+        <div class="pill-label">Songs</div>
+      </div>
+      <div class="summary-pill" id="sumOkPill">
+        <div class="pill-value" id="sumOk">—</div>
+        <div class="pill-label">All Clear</div>
+      </div>
+      <div class="summary-pill" id="sumWarnPill">
+        <div class="pill-value" id="sumWarn">—</div>
+        <div class="pill-label">Warnings</div>
+      </div>
+      <div class="summary-pill" id="sumErrPill">
+        <div class="pill-value" id="sumErr">—</div>
+        <div class="pill-label">Errors</div>
+      </div>
+    </div>
+
+    <button class="btn-run" id="btnRun">
+      <span id="btnRunIcon">◈</span>
+      <span id="btnRunLabel">Run Validation</span>
+    </button>
+
+    <div id="results">
+      <div class="idle-state">
+        <div class="idle-icon">🔍</div>
+        <p>Press Run Validation to check your config and audio files.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Spyro Heardle — a fan project. Spyro © Insomniac Games / Activision.</p>
+  </footer>
+
+  <script src="game.js"></script>
+  <script src="validator.js"></script>
+</body>
+</html>
