@@ -454,6 +454,10 @@ main {
   flex-shrink: 0;
   color: var(--text-muted);
   opacity: 0.7;
+  display: block;
+  align-self: center;
+  position: relative;
+  top: 1px;
 }
 
 .volume-icon-loud {
@@ -471,6 +475,7 @@ main {
   border: 1px solid var(--border-subtle);
   outline: none;
   cursor: pointer;
+  align-self: center;
 }
 
 .volume-slider::-webkit-slider-thumb {
