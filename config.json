@@ -125,7 +125,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 2,
+      "day": 3,
       "answer": "Spyro: Year of the Dragon - Icy Peak",
       "audioFolder": "audio/icy-peak",
       "stems": [
@@ -139,7 +139,7 @@
       "maxAttempts": 6
     },
     {
-      "day": 3,
+      "day": 4,
       "answer": "Spyro the Dragon - Artisans",
       "audioFolder": "audio/artisans",
       "stems": [
@@ -151,7 +151,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 4,
+      "day": 5,
       "answer": "Spyro: Year of the Dragon - Spooky Swamp",
       "audioFolder": "audio/spooky-swamp",
       "stems": [
@@ -163,7 +163,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 5,
+      "day": 6,
       "answer": "Spyro: Year of the Dragon - Charmed Ridge",
       "audioFolder": "audio/charmed-ridge",
       "stems": [
@@ -175,7 +175,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 6,
+      "day": 7,
       "answer": "Spyro 2: Ripto's Rage - Sunny Beach",
       "audioFolder": "audio/sunny-beach",
       "stems": [
@@ -187,7 +187,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 7,
+      "day": 8,
       "answer": "Spyro the Dragon - Dream Weavers",
       "audioFolder": "audio/dream-weavers",
       "stems": [
@@ -200,7 +200,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 8,
+      "day": 9,
       "answer": "Spyro 2: Ripto's Rage - Ripto's Arena",
       "audioFolder": "audio/ripto",
       "stems": [
@@ -213,7 +213,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 9,
+      "day": 10,
       "answer": "Spyro: Year of the Dragon - Sunny Villa",
       "audioFolder": "audio/sunny-villa",
       "stems": [
@@ -225,7 +225,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 10,
+      "day": 11,
       "answer": "Spyro: Year of the Dragon - Seashell Shore",
       "audioFolder": "audio/seashell-shore",
       "stems": [
@@ -238,7 +238,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 11,
+      "day": 12,
       "answer": "Spyro 2: Ripto's Rage - Scorch",
       "audioFolder": "audio/scorch",
       "stems": [
@@ -250,7 +250,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 12,
+      "day": 13,
       "answer": "Spyro 2: Ripto's Rage - Crystal Glacier",
       "audioFolder": "audio/crystal-glacier",
       "stems": [
@@ -263,7 +263,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 13,
+      "day": 14,
       "answer": "Spyro the Dragon - Stone Hill",
       "audioFolder": "audio/stone-hill",
       "stems": [
@@ -275,7 +275,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 14,
+      "day": 15,
       "answer": "Spyro 2: Ripto's Rage - Crush's Dungeon",
       "audioFolder": "audio/crush",
       "stems": [
