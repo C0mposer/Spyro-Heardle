@@ -1,8 +1,3 @@
-/* ============================================================
-   SPYRO HEARDLE — game.js
-   Core game logic, audio, autocomplete, sharing
-   ============================================================ */
-
 // ── Constants ──────────────────────────────────────────────
 const CONFIG_URL  = 'config.json';
 const STORAGE_KEY = 'spyro-heardle-state';
