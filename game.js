@@ -61,8 +61,8 @@ let spyroParticleImages = null;
 
 async function loadSpyroParticleImages() {
   const found = [];
-  // Try up to 20 candidate images: particles/spyro1.png … spyro20.png
-  const checks = Array.from({ length: 20 }, (_, i) => {
+  // Try up to 20 candidate images: particles/spyro1.png … spyro20.png (made 13 for now, since I don't have 20)
+  const checks = Array.from({ length: 13 }, (_, i) => {
     return new Promise(resolve => {
       const img = new Image();
       const src = `particles/spyro${i + 1}.png`;
@@ -130,29 +130,47 @@ async function spawnParticles() {
 
 // ── Speedrun timer ─────────────────────────────────────────
 
+// ── Speedrun timer ─────────────────────────────────────────
+// timerStart is kept in sessionStorage so a hard refresh resets it.
+// timerFinalMs is kept in localStorage (via saveState) for the result display.
+
 function timerTick() {
   const el = $('speedrunTimer');
-  if (!el || timerStart === null) return;
-  el.textContent = formatElapsed(Date.now() - timerStart);
+  if (!el) return;
+  const start = getTimerStart();
+  if (start === null) return;
+  el.textContent = formatElapsed(Date.now() - start);
+}
+
+function getTimerStart() {
+  const v = sessionStorage.getItem('spyro-heardle-timer-start');
+  return v ? parseInt(v, 10) : null;
 }
 
 function startTimer() {
-  if (timerStart !== null) return; // already started
-  timerStart = Date.now();
+  if (getTimerStart() !== null) return; // already running
+  const now = Date.now();
+  sessionStorage.setItem('spyro-heardle-timer-start', String(now));
+  timerStart = now;
   const el = $('speedrunTimer');
   if (el) el.classList.remove('hidden');
   timerInterval = setInterval(timerTick, 100);
 }
 
 function stopTimer() {
-  if (timerStart === null) return;
-  timerEnd = Date.now();
-  timerFinalMs = timerEnd - timerStart;
+  const start = getTimerStart();
+  if (start === null) return;
+  timerFinalMs = Date.now() - start;
+  timerStart = start;
+  sessionStorage.removeItem('spyro-heardle-timer-start');
   clearInterval(timerInterval);
   timerInterval = null;
-  // Show final time
+  // Freeze display
   const el = $('speedrunTimer');
-  if (el) el.textContent = formatElapsed(timerFinalMs);
+  if (el) {
+    el.textContent = formatElapsed(timerFinalMs);
+    el.style.animation = 'none'; // stop pulsing when frozen
+  }
 }
 
 function formatElapsed(ms) {
@@ -869,6 +887,14 @@ function restoreGameState(saved) {
   } else {
     updateStemBar();
     loadStem(currentStem);
+    // Resume live timer if session still has a start (mid-game refresh)
+    const existingStart = getTimerStart();
+    if (existingStart !== null) {
+      timerStart = existingStart;
+      const el = $('speedrunTimer');
+      if (el) el.classList.remove('hidden');
+      timerInterval = setInterval(timerTick, 100);
+    }
   }
 }
 

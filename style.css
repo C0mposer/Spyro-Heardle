@@ -378,7 +378,60 @@ main {
   transition: width 0.1s linear;
 }
 
-.time-display {
+.speedrun-timer {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--gold-bright);
+  background: rgba(200, 130, 10, 0.15);
+  border: 1px solid rgba(200, 130, 10, 0.35);
+  padding: 0.4em 0.7em;
+  border-radius: 100px;
+  width: 5.5rem;
+  text-align: center;
+  flex-shrink: 0;
+  /* Pulse opacity only — no size/layout changes */
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+.guess-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.guess-input-row .autocomplete-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.result-time-icon {
+  font-size: 1rem;
+}
+
+.result-time-value {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--gold-bright);
+  filter: drop-shadow(0 0 8px rgba(240, 180, 41, 0.4));
+}
+
+
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.05em;
@@ -1280,29 +1333,6 @@ main {
   font-weight: 700;
   transition: all var(--transition);
   box-shadow: 0 4px 20px rgba(107,53,200,0.35);
-}
-
-.speedrun-timer {
-  position: absolute;
-  right: -55px;
-  top: 40%;
-  transform: translateY(-50%);
-
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-
-  color: var(--gold-bright);
-  background: rgba(200, 130, 10, 0.15);
-  border: 1px solid rgba(200, 130, 10, 0.35);
-  padding: 0.2em 0.55em;
-  border-radius: 100px;
-
-  white-space: nowrap;          /* ADD */
-  font-variant-numeric: tabular-nums; /* ADD (VERY IMPORTANT) */
-
-  animation: timerPulse 1s ease-in-out infinite;
 }
 
 .btn-play-now:hover {

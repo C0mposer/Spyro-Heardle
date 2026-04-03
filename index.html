@@ -18,7 +18,7 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="archive.html" class="archive-link">◈ Archive</a>
+        <a href="archive.html" class="archive-link">◈ Previous Days</a>
       </div>
       <h1 class="site-title">
         <span class="title-spyro">Spyro</span>
@@ -60,7 +60,6 @@
             <div class="progress-fill" id="progressFill"></div>
           </div>
           <span class="time-display" id="timeDisplay">0:00</span>
-          <span class="speedrun-timer hidden" id="speedrunTimer">0.0s</span>
         </div>
         <div class="volume-row">
           <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -75,16 +74,19 @@
 
       <!-- Guess area -->
       <div id="guessArea" class="guess-area">
-        <div class="autocomplete-wrap">
-          <input
-            type="text"
-            id="guessInput"
-            class="guess-input"
-            placeholder="Name that tune…"
-            autocomplete="off"
-            spellcheck="false"
-          />
-          <div class="autocomplete-list hidden" id="autocompleteList"></div>
+        <div class="guess-input-row">
+          <div class="autocomplete-wrap">
+            <input
+              type="text"
+              id="guessInput"
+              class="guess-input"
+              placeholder="Name that tune…"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="autocomplete-list hidden" id="autocompleteList"></div>
+          </div>
+          <span class="speedrun-timer hidden" id="speedrunTimer">0.0s</span>
         </div>
         <div class="guess-buttons">
           <button class="btn-skip" id="btnSkip">Skip ›</button>
