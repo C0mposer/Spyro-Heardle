@@ -284,7 +284,7 @@ main {
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem 1.5rem;
+  padding: 1.25rem 1.5rem 1.75rem;
   margin-bottom: 1.5rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(155, 89, 245, 0.1);
@@ -444,7 +444,8 @@ main {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-top: 0.9rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .volume-icon {
