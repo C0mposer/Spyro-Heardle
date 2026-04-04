@@ -819,7 +819,10 @@ function buildShareText() {
 
 function buildShareUrl(day) {
   const base = window.location.origin + window.location.pathname.replace('index.html', '');
-  return `${base}?day=${day}`;
+  const todayDay = getDayNumberForToday(config);
+  // Only include ?day= for archive days
+  if (day !== todayDay) return `${base}?day=${day}`;
+  return base;
 }
 
 // ── Share button ────────────────────────────────────────────
