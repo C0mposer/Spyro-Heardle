@@ -113,19 +113,6 @@
     },
     {
       "day": 2,
-      "answer": "Spyro 2: Ripto's Rage - Idol Springs",
-      "alsoAccept": ["Spyro 2: Ripto's Rage - Fracture Hills"],
-      "audioFolder": "audio/idol-springs",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
-        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
-        { "label": "Bells", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 4
-    },
-    {
-      "day": 3,
       "answer": "Spyro: Year of the Dragon - Icy Peak",
       "audioFolder": "audio/icy-peak",
       "stems": [
@@ -137,6 +124,19 @@
         { "label": "Synths", "file": "FULL.wav" }
       ],
       "maxAttempts": 6
+    },
+    {
+      "day": 3,
+      "answer": "Spyro 2: Ripto's Rage - Idol Springs",
+      "alsoAccept": ["Spyro 2: Ripto's Rage - Fracture Hills"],
+      "audioFolder": "audio/idol-springs",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "Bells", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     },
     {
       "day": 4,
