@@ -127,6 +127,19 @@
     },
     {
       "day": 3,
+      "answer": "Spyro 2: Ripto's Rage - Crystal Glacier",
+      "audioFolder": "audio/crystal-glacier",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Keys", "file": "Bass + Drums + Keys.mp3" },
+        { "label": "Bells + SFX", "file": "Bass + Drums + Keys + BellSFX.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 4,
       "answer": "Spyro 2: Ripto's Rage - Idol Springs",
       "alsoAccept": ["Spyro 2: Ripto's Rage - Fracture Hills"],
       "audioFolder": "audio/idol-springs",
@@ -139,7 +152,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 4,
+      "day": 5,
       "answer": "Spyro the Dragon - Artisans",
       "audioFolder": "audio/artisans",
       "stems": [
@@ -151,7 +164,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 5,
+      "day": 6,
       "answer": "Spyro: Year of the Dragon - Spooky Swamp",
       "audioFolder": "audio/spooky-swamp",
       "stems": [
@@ -163,7 +176,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 6,
+      "day": 7,
       "answer": "Spyro: Year of the Dragon - Charmed Ridge",
       "audioFolder": "audio/charmed-ridge",
       "stems": [
@@ -175,7 +188,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 7,
+      "day": 8,
       "answer": "Spyro 2: Ripto's Rage - Sunny Beach",
       "audioFolder": "audio/sunny-beach",
       "stems": [
@@ -187,7 +200,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 8,
+      "day": 9,
       "answer": "Spyro the Dragon - Dream Weavers",
       "audioFolder": "audio/dream-weavers",
       "stems": [
@@ -200,7 +213,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 9,
+      "day": 10,
       "answer": "Spyro 2: Ripto's Rage - Ripto's Arena",
       "audioFolder": "audio/ripto",
       "stems": [
@@ -213,7 +226,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 10,
+      "day": 11,
       "answer": "Spyro: Year of the Dragon - Sunny Villa",
       "audioFolder": "audio/sunny-villa",
       "stems": [
@@ -225,7 +238,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 11,
+      "day": 12,
       "answer": "Spyro: Year of the Dragon - Seashell Shore",
       "audioFolder": "audio/seashell-shore",
       "stems": [
@@ -238,7 +251,7 @@
       "maxAttempts": 5
     },
     {
-      "day": 12,
+      "day": 13,
       "answer": "Spyro 2: Ripto's Rage - Scorch",
       "audioFolder": "audio/scorch",
       "stems": [
@@ -248,19 +261,6 @@
         { "label": "Whistle", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
-    },
-    {
-      "day": 13,
-      "answer": "Spyro 2: Ripto's Rage - Crystal Glacier",
-      "audioFolder": "audio/crystal-glacier",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Drums", "file": "Bass + Drums.mp3" },
-        { "label": "Keys", "file": "Bass + Drums + Keys.mp3" },
-        { "label": "Bells + SFX", "file": "Bass + Drums + Keys + BellSFX.mp3" },
-        { "label": "Guitar", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 5
     },
     {
       "day": 14,
