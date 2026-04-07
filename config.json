@@ -152,55 +152,19 @@
     },
     {
       "day": 5,
-      "answer": "Spyro 2: Ripto's Rage - Idol Springs",
-      "alsoAccept": ["Spyro 2: Ripto's Rage - Fracture Hills"],
-      "audioFolder": "audio/idol-springs",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
-        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
-        { "label": "Bells", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 4
-    },
-    {
-      "day": 6,
-      "answer": "Spyro the Dragon - Artisans",
-      "audioFolder": "audio/artisans",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Drums", "file": "Bass + Drums.mp3" },
-        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
-        { "label": "Keys + Bells", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 4
-    },
-    {
-      "day": 7,
-      "answer": "Spyro: Year of the Dragon - Spooky Swamp",
-      "audioFolder": "audio/spooky-swamp",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Vox", "file": "Bass + Vox.mp3" },
-        { "label": "Drums", "file": "Bass + Vox + Drums.mp3" },
-        { "label": "Organ + SFX", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 4
-    },
-    {
-      "day": 8,
-      "answer": "Spyro 2: Ripto's Rage - Sunny Beach",
-      "audioFolder": "audio/sunny-beach",
+      "answer": "Spyro 2: Ripto's Rage - Ripto's Arena",
+      "audioFolder": "audio/ripto",
       "stems": [
         { "label": "Drums", "file": "Drums.mp3" },
         { "label": "Bass", "file": "Drums + Bass.mp3" },
         { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
-        { "label": "Keys", "file": "FULL.wav" }
+        { "label": "Keys", "file": "Drums + Bass + Guitar + Keys.mp3" },
+        { "label": "SFX", "file": "FULL.wav" }
       ],
-      "maxAttempts": 4
+      "maxAttempts": 5
     },
     {
-      "day": 9,
+      "day": 6,
       "answer": "Spyro the Dragon - Dream Weavers",
       "audioFolder": "audio/dream-weavers",
       "stems": [
@@ -213,17 +177,53 @@
       "maxAttempts": 5
     },
     {
+      "day": 7,
+      "answer": "Spyro 2: Ripto's Rage - Idol Springs",
+      "alsoAccept": ["Spyro 2: Ripto's Rage - Fracture Hills"],
+      "audioFolder": "audio/idol-springs",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "Bells", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 8,
+      "answer": "Spyro the Dragon - Artisans",
+      "audioFolder": "audio/artisans",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
+        { "label": "Keys + Bells", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 9,
+      "answer": "Spyro: Year of the Dragon - Spooky Swamp",
+      "audioFolder": "audio/spooky-swamp",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Vox", "file": "Bass + Vox.mp3" },
+        { "label": "Drums", "file": "Bass + Vox + Drums.mp3" },
+        { "label": "Organ + SFX", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
       "day": 10,
-      "answer": "Spyro 2: Ripto's Rage - Ripto's Arena",
-      "audioFolder": "audio/ripto",
+      "answer": "Spyro 2: Ripto's Rage - Sunny Beach",
+      "audioFolder": "audio/sunny-beach",
       "stems": [
         { "label": "Drums", "file": "Drums.mp3" },
         { "label": "Bass", "file": "Drums + Bass.mp3" },
         { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
-        { "label": "Keys", "file": "Drums + Bass + Guitar + Keys.mp3" },
-        { "label": "SFX", "file": "FULL.wav" }
+        { "label": "Keys", "file": "FULL.wav" }
       ],
-      "maxAttempts": 5
+      "maxAttempts": 4
     },
     {
       "day": 11,
