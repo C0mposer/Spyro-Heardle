@@ -3,6 +3,10 @@
   "repoBaseUrl": "",
   "startDate": "2026-04-03",
   "timezone": "America/Los_Angeles",
+    "supabase": {
+    "url": "https://dgwaikkpmffenybpazut.supabase.co",
+    "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnd2Fpa2twbWZmZW55YnBhenV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MzQ2NDcsImV4cCI6MjA5MTIxMDY0N30.HfNv116Hg-XGvzcXtFfkqsXZcEFH43B_0bbrG5up_GQ"
+  },
   "songs": [
     "Spyro the Dragon - Artisans",
     "Spyro the Dragon - Peace Keepers",
@@ -191,6 +195,19 @@
     },
     {
       "day": 8,
+      "answer": "Spyro: Year of the Dragon - Seashell Shore",
+      "audioFolder": "audio/seashell-shore",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Keys", "file": "Bass + Guitar + Piano.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Piano + Drums.mp3" },
+        { "label": "Melody + Intro", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 9,
       "answer": "Spyro the Dragon - Artisans",
       "audioFolder": "audio/artisans",
       "stems": [
@@ -202,7 +219,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 9,
+      "day": 10,
       "answer": "Spyro: Year of the Dragon - Spooky Swamp",
       "audioFolder": "audio/spooky-swamp",
       "stems": [
@@ -214,7 +231,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 10,
+      "day": 11,
       "answer": "Spyro 2: Ripto's Rage - Sunny Beach",
       "audioFolder": "audio/sunny-beach",
       "stems": [
@@ -226,7 +243,7 @@
       "maxAttempts": 4
     },
     {
-      "day": 11,
+      "day": 12,
       "answer": "Spyro: Year of the Dragon - Sunny Villa",
       "audioFolder": "audio/sunny-villa",
       "stems": [
@@ -236,19 +253,6 @@
         { "label": "Organ + Intro", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
-    },
-    {
-      "day": 12,
-      "answer": "Spyro: Year of the Dragon - Seashell Shore",
-      "audioFolder": "audio/seashell-shore",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
-        { "label": "Keys", "file": "Bass + Guitar + Piano.mp3" },
-        { "label": "Drums", "file": "Bass + Guitar + Piano + Drums.mp3" },
-        { "label": "Melody + Intro", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 5
     },
     {
       "day": 13,
