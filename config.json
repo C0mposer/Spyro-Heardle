@@ -208,18 +208,6 @@
     },
     {
       "day": 9,
-      "answer": "Spyro the Dragon - Artisans",
-      "audioFolder": "audio/artisans",
-      "stems": [
-        { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Drums", "file": "Bass + Drums.mp3" },
-        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
-        { "label": "Keys + Bells", "file": "FULL.wav" }
-      ],
-      "maxAttempts": 4
-    },
-    {
-      "day": 10,
       "answer": "Spyro: Year of the Dragon - Spooky Swamp",
       "audioFolder": "audio/spooky-swamp",
       "stems": [
@@ -227,6 +215,18 @@
         { "label": "Vox", "file": "Bass + Vox.mp3" },
         { "label": "Drums", "file": "Bass + Vox + Drums.mp3" },
         { "label": "Organ + SFX", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 10,
+      "answer": "Spyro the Dragon - Artisans",
+      "audioFolder": "audio/artisans",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
+        { "label": "Keys + Bells", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
     },
