@@ -295,6 +295,7 @@
       "day": 16,
       "answer": "Spyro: Year of the Dragon - Title Screen",
       "audioFolder": "audio/s3-title",
+      "alsoAccept": ["Spyro: Year of the Dragon - Bugbot Factory", "Spyro: Year of the Dragon - Crawdad Farm"],
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
         { "label": "Drums", "file": "Bass + Drums.mp3" },
