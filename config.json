@@ -70,6 +70,7 @@
     "Spyro 2: Ripto's Rage - Metropolis",
     "Spyro 2: Ripto's Rage - Canyon Speedway",
     "Spyro 2: Ripto's Rage - Ripto's Arena",
+    "Spyro: Year of the Dragon - Title Screen",
     "Spyro: Year of the Dragon - Sunrise Spring",
     "Spyro: Year of the Dragon - Midday Gardens",
     "Spyro: Year of the Dragon - Evening Lake",
@@ -287,6 +288,18 @@
         { "label": "Bass", "file": "Drums + Bass.mp3" },
         { "label": "Organ", "file": "Drums + Bass + Organ.mp3" },
         { "label": "Guitar", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 16,
+      "answer": "Spyro: Year of the Dragon - Title Screen",
+      "audioFolder": "audio/crush",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Bass", "file": "Bass + Drums.mp3" },
+        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
+        { "label": "Organ", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
     }
