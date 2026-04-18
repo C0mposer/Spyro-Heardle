@@ -294,7 +294,7 @@
     {
       "day": 16,
       "answer": "Spyro: Year of the Dragon - Title Screen",
-      "audioFolder": "audio/crush",
+      "audioFolder": "s3-title/crush",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
         { "label": "Bass", "file": "Bass + Drums.mp3" },
