@@ -297,7 +297,7 @@
       "audioFolder": "audio/s3-title",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
-        { "label": "Bass", "file": "Bass + Drums.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
         { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
         { "label": "Organ", "file": "FULL.wav" }
       ],
