@@ -316,6 +316,18 @@
         { "label": "SFX", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 18,
+      "answer": "Spyro the Dragon - Misty Bog",
+      "audioFolder": "audio/misty",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Organ", "file": "Drums + Bass + Organ.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" },
+      ],
+      "maxAttempts": 4
     }
   ]
 }
