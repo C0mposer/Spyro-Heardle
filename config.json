@@ -329,6 +329,18 @@
         { "label": "Guitar", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
+    },
+    {
+      "day": 19,
+      "answer": "Spyro: Year of the Dragon - Desert Ruins",
+      "audioFolder": "audio/ruins",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Piano", "file": "Drums + Bass + Piano.mp3" },
+        { "label": "SFX", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
