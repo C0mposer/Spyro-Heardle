@@ -341,6 +341,18 @@
         { "label": "SFX", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
+    },
+    {
+      "day": 20,
+      "answer": "Spyro the Dragon - Town Square",
+      "audioFolder": "audio/town-square",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "Keys", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
