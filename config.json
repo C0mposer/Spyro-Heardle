@@ -363,7 +363,7 @@
         { "label": "Drums", "file": "Bass + Drums.mp3" },
         { "label": "Panflute", "file": "FULL.wav" }
       ],
-      "maxAttempts": 4
+      "maxAttempts": 3
     }
   ]
 }
