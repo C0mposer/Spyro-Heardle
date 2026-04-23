@@ -353,6 +353,17 @@
         { "label": "Keys", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
+    },
+    {
+      "day": 21,
+      "answer": "Spyro: Year of the Dragon - Frozen Altars",
+      "audioFolder": "audio/frozen-alters",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Panflute", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
