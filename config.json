@@ -376,7 +376,7 @@
         { "label": "SFX", "file": "Bass + Guitar + Drums + SFX.mp3" },
         { "label": "Piano", "file": "FULL.wav" }
       ],
-      "maxAttempts": 3
+      "maxAttempts": 5
     }
   ]
 }
