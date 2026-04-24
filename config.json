@@ -364,6 +364,19 @@
         { "label": "Panflute", "file": "FULL.wav" }
       ],
       "maxAttempts": 3
+    },
+    {
+      "day": 22,
+      "answer": "Spyro the Dragon - Alpine Ridge",
+      "audioFolder": "audio/alpine",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "SFX", "file": "Bass + Guitar + Drums + SFX.mp3" },
+        { "label": "Piano", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 3
     }
   ]
 }
