@@ -377,6 +377,19 @@
         { "label": "Piano", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 23,
+      "answer": "Spyro the Dragon - Twilight Harbor",
+      "audioFolder": "audio/twilight",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Organ", "file": "Bass + Guitar + Organ.mp3" },
+        { "label": "Piano", "file": "Bass + Guitar + Organ + Piano.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
