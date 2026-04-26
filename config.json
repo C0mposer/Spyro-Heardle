@@ -70,6 +70,7 @@
     "Spyro 2: Ripto's Rage - Metropolis",
     "Spyro 2: Ripto's Rage - Canyon Speedway",
     "Spyro 2: Ripto's Rage - Ripto's Arena",
+    "Spyro 2: Ripto's Rage - Bone Dance/Skeleton Dance",
     "Spyro: Year of the Dragon - Title Screen",
     "Spyro: Year of the Dragon - Sunrise Spring",
     "Spyro: Year of the Dragon - Midday Gardens",
@@ -390,6 +391,18 @@
         { "label": "Drums", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 24,
+      "answer": "Spyro 2: Ripto's Rage - Bone Dance/Skeleton Dance",
+      "audioFolder": "audio/bone-dance",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Organ", "file": "Bass + Drums + Organ.mp3" },
+        { "label": "VOX", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
