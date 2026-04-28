@@ -403,6 +403,19 @@
         { "label": "VOX", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
+    },
+    {
+      "day": 24,
+      "answer": "Spyro 2: Ripto's Rage - Shady Oasis",
+      "audioFolder": "audio/shady",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Guitar", "file": "Drums + Guitar.mp3" },
+        { "label": "Bass", "file": "Drums + Guitar + Bass.mp3" },
+        { "label": "Piano", "file": "Drums + Guitar + Bass + Piano.mp3" },
+        { "label": "Whistle", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
