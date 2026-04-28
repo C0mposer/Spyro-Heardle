@@ -417,5 +417,18 @@
       ],
       "maxAttempts": 5
     }
+    {
+      "day": 26,
+      "answer": "Spyro: Year of the Dragon - Evening Lake",
+      "audioFolder": "audio/evening",
+      "stems": [
+        { "label": "Kick + Snare", "file": "Kick + Snare.mp3" },
+        { "label": "Bass", "file": "Kick + Snare + Bass.mp3" },
+        { "label": "Organ", "file": "Kick + Snare + Bass + Organ.mp3" },
+        { "label": "Hi Hat", "file": "Kick + Snare + Bass + Organ + HH.mp3" },
+        { "label": "Synth", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    }
   ]
 }
