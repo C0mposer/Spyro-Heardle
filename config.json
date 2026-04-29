@@ -429,6 +429,19 @@
         { "label": "Synth", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 27,
+      "answer": "Spyro the Dragon - High Caves",
+      "audioFolder": "audio/high-caves",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
+        { "label": "Keys", "file": "Drums + Bass + Guitar + Keys.mp3" },
+        { "label": "Synth", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
