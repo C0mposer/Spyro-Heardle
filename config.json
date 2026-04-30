@@ -442,6 +442,20 @@
         { "label": "Synth", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 28,
+      "answer": "Spyro: Year of the Dragon - Sheila's Alp",
+      "audioFolder": "audio/sheila",
+      "stems": [
+        { "label": "Kick + Conga", "file": "Kick + Conga.mp3" },
+        { "label": "Snare", "file": "Kick + Conga + Snare.mp3" },
+        { "label": "Bass", "file": "Kick + Conga + Snare + Bass.mp3" },
+        { "label": "Guitar", "file": "Kick + Conga + Snare + Bass + Guitar.mp3" },
+        { "label": "Voice FX", "file": "Kick + Conga + Snare + Bass + Guitar + Voice FX.wav" },
+        { "label": "Harmonica", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 6
     }
   ]
 }
