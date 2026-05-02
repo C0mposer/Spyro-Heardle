@@ -56,6 +56,7 @@
     "Spyro 2: Ripto's Rage - Crush's Dungeon",
     "Spyro 2: Ripto's Rage - Skelos Badlands",
     "Spyro 2: Ripto's Rage - Crystal Glacier",
+    "Spyro 2: Ripto's Rage - Crystal Glacier Intro",
     "Spyro 2: Ripto's Rage - Breeze Harbor",
     "Spyro 2: Ripto's Rage - Zephyr",
     "Spyro 2: Ripto's Rage - Scorch",
@@ -467,6 +468,19 @@
         { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
         { "label": "Organ", "file": "Drums + Bass + Guitar + Organ.mp3" },
         { "label": "Keys", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 30,
+      "answer": "Spyro 2: Ripto's Rage - Crystal Glacier Intro",
+      "audioFolder": "audio/crystal-glacier-opening",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Vox", "file": "Drums + Bass + Vox.mp3" },
+        { "label": "Guitar", "file": "Drums + Bass + Vox + Guitar.mp3" },
+        { "label": "Organ", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
     }
