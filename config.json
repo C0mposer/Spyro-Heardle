@@ -456,6 +456,19 @@
         { "label": "Harmonica", "file": "FULL.wav" }
       ],
       "maxAttempts": 6
+    },
+    {
+      "day": 29,
+      "answer": "Spyro the Dragon - Night Flight",
+      "audioFolder": "audio/night-flight",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
+        { "label": "Organ", "file": "Drums + Bass + Guitar + Organ.mp3" },
+        { "label": "Keys", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
