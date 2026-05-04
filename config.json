@@ -102,6 +102,10 @@
     "Spyro: Year of the Dragon - Sorceress's Lair",
     "Spyro: Year of the Dragon - Bugbot Factory",
     "Spyro: Year of the Dragon - Super Bonus Round",
+    "Spyro: Year of the Dragon - Mushroom Speedway",
+    "Spyro: Year of the Dragon - Country Speedway",
+    "Spyro: Year of the Dragon - Honey Speedway",
+    "Spyro: Year of the Dragon - Harbor Speedway",
     "Spyro Trilogy - Credits"
   ],
   "puzzles": [
@@ -481,6 +485,19 @@
         { "label": "Vox", "file": "Drums + Bass + Vox.mp3" },
         { "label": "Guitar", "file": "Drums + Bass + Vox + Guitar.mp3" },
         { "label": "Organ", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+        {
+      "day": 31,
+      "answer": "Spyro: Year of the Dragon - Mushroom Speedway",
+      "audioFolder": "audio/mushroom",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Keys", "file": "Bass + Guitar + Keys" },
+        { "label": "Organ", "file": "Bass + Guitar + Keys + Organ.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
     }
