@@ -495,7 +495,7 @@
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
         { "label": "Guitar", "file": "Bass + Guitar.mp3" },
-        { "label": "Keys", "file": "Bass + Guitar + Piano" },
+        { "label": "Keys", "file": "Bass + Guitar + Piano.mp3" },
         { "label": "Organ", "file": "Bass + Guitar + Piano + Organ.mp3" },
         { "label": "Drums", "file": "FULL.wav" }
       ],
