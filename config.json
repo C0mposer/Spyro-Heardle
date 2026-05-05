@@ -537,6 +537,30 @@
         { "label": "Trumpet", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
+    },
+    {
+      "day": 35,
+      "answer": "Spyro: Year of the Dragon - Midday Gardens",
+      "audioFolder": "audio/midday",
+      "stems": [
+        { "label": "Pad + Synth Bass.mp3", "file": "Pad + Synth Bass.mp3" },
+        { "label": "Organ.mp3", "file": "Pad + Synth Bass + Organ.mp3" },
+        { "label": "Bass.mp3", "file": "Pad + Synth Bass + Organ + Bass.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 36,
+      "answer": "Spyro 2: Ripto's Rage - Zephyr",
+      "audioFolder": "audio/zephyr",
+      "stems": [
+        { "label": "Bass.mp3", "file": "Bass.mp3" },
+        { "label": "Organ.mp3", "file": "Bass + Organ.mp3" },
+        { "label": "Guitar.mp3", "file": "Bass + Organ + Guitar.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
