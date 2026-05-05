@@ -517,7 +517,7 @@
     {
       "day": 33,
       "answer": "Spyro the Dragon - Peace Keepers",
-      "audioFolder": "audio/dark-passage",
+      "audioFolder": "audio/pkhw",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
         { "label": "Drums", "file": "Bass + Drums.mp3" },
