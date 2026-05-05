@@ -488,7 +488,7 @@
       ],
       "maxAttempts": 5
     },
-        {
+    {
       "day": 31,
       "answer": "Spyro: Year of the Dragon - Mushroom Speedway",
       "audioFolder": "audio/mushroom",
@@ -498,6 +498,19 @@
         { "label": "Keys", "file": "Bass + Guitar + Piano.mp3" },
         { "label": "Organ", "file": "Bass + Guitar + Piano + Organ.mp3" },
         { "label": "Drums", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 32,
+      "answer": "Spyro the Dragon - Dark Passage",
+      "audioFolder": "audio/dark-passage",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Organ", "file": "Drums + Bass + Organ.mp3" },
+        { "label": "Keys", "file": "Drums + Bass + Organ + Keys.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
     }
