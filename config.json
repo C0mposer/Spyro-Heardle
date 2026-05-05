@@ -513,6 +513,18 @@
         { "label": "Guitar", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 33,
+      "answer": "Spyro the Dragon - Peace Keepers",
+      "audioFolder": "audio/dark-passage",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
+        { "label": "Brass", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
