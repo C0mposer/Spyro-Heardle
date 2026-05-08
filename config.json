@@ -561,6 +561,19 @@
         { "label": "Drums", "file": "FULL.wav" }
       ],
       "maxAttempts": 4
+    },
+    {
+      "day": 37,
+      "answer": "Spyro 2: Ripto's Rage - Cloud Temples",
+      "audioFolder": "audio/cloud",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "Organ", "file": "Bass + Guitar + Drums + Organ.mp3" },
+        { "label": "Flute", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
