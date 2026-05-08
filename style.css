@@ -1414,6 +1414,13 @@ main {
 .col-played { width: 85px; }
 .col-avg    { width: 80px; }
 .col-time   { width: 115px; }
+.col-result { width: 190px; }
+
+.today-guess-pattern {
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
 
 /* Your rank (outside top 100) */
 .lb-your-rank {

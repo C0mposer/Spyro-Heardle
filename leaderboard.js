@@ -110,6 +110,7 @@ function rankPlayerInScope(player, puzzles, scoreMap) {
   let totalTimeMs = 0;
   let attemptsOnWins = 0;
   let firstTryWins = 0;
+  let todayScore = null;
 
   puzzles.forEach(puzzle => {
     const score = scoreMap.get(`${player.id}:${puzzle.day}`);
@@ -122,6 +123,7 @@ function rankPlayerInScope(player, puzzles, scoreMap) {
 
     played++;
     totalTimeMs += parseInt(score.time_ms, 10) || 0;
+    if (puzzles.length === 1) todayScore = score;
 
     if (score.won) {
       const attempts = clamp(parseInt(score.attempts_used, 10) || maxAttempts, 1, maxAttempts);
@@ -142,6 +144,7 @@ function rankPlayerInScope(player, puzzles, scoreMap) {
     firstTryWins,
     totalTimeMs,
     avgGuesses: wins ? attemptsOnWins / wins : null,
+    todayScore,
   };
 }
 
@@ -167,6 +170,7 @@ function renderLeaderboard() {
   const rows = getRowsForScope(lbScope);
   renderScopeSummary(rows);
   renderPodium(rows.slice(0, 3));
+  renderTableHeader();
   renderTable(rows);
   renderYourRank(rows);
 }
@@ -180,11 +184,43 @@ function getRowsForScope(scope) {
 }
 
 function compareRows(a, b) {
+  if (lbScope === LB_SCOPES.today) {
+    return Number(!b.todayScore?.won) - Number(!a.todayScore?.won)
+      || (a.guesses - b.guesses)
+      || (a.totalTimeMs - b.totalTimeMs)
+      || a.nickname.localeCompare(b.nickname);
+  }
+
   return (a.guesses - b.guesses)
     || (a.totalTimeMs - b.totalTimeMs)
     || (b.wins - a.wins)
     || (b.firstTryWins - a.firstTryWins)
     || a.nickname.localeCompare(b.nickname);
+}
+
+function renderTableHeader() {
+  const headRow = document.querySelector('#lbTable thead tr');
+  if (!headRow) return;
+
+  if (lbScope === LB_SCOPES.today) {
+    headRow.innerHTML = `
+      <th class="col-rank">Rank</th>
+      <th class="col-name">Player</th>
+      <th class="col-result">Guess Number</th>
+      <th class="col-time">Guess Time</th>
+    `;
+    return;
+  }
+
+  headRow.innerHTML = `
+    <th class="col-rank">Rank</th>
+    <th class="col-name">Player</th>
+    <th class="col-first">First Tries</th>
+    <th class="col-wins">Wins</th>
+    <th class="col-played">Played</th>
+    <th class="col-avg">Avg</th>
+    <th class="col-time">Total Time</th>
+  `;
 }
 
 function renderScopeSummary(rows) {
@@ -229,6 +265,11 @@ function renderTable(rows) {
     return;
   }
 
+  if (lbScope === LB_SCOPES.today) {
+    renderTodayTable(rows);
+    return;
+  }
+
   tbody.innerHTML = rows.map(r => {
     const isMe = r.id === myPlayerId;
     const isTop = r.rank <= 3;
@@ -251,9 +292,30 @@ function renderTable(rows) {
   }).join('');
 }
 
+function renderTodayTable(rows) {
+  const tbody = document.getElementById('lbTableBody');
+  tbody.innerHTML = rows.map(r => {
+    const isMe = r.id === myPlayerId;
+    const isTop = r.rank <= 3;
+    return `
+      <tr class="lb-row ${isMe ? 'lb-row-me' : ''} ${isTop ? 'lb-row-top' : ''}">
+        <td class="col-rank">
+          <span class="rank-badge ${getRankClass(r.rank)}">${r.rank}</span>
+        </td>
+        <td class="col-name">
+          <span class="player-name">${escapeHtml(r.nickname)}</span>
+          ${isMe ? '<span class="you-badge">You</span>' : ''}
+        </td>
+        <td class="col-result"><span class="today-guess-pattern">${formatTodayGuessPattern(r)}</span></td>
+        <td class="col-time">${formatTotalTime(r.totalTimeMs)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
 function renderTableMessage(message) {
   document.getElementById('lbTableBody').innerHTML =
-    `<tr><td colspan="7" class="lb-loading">${escapeHtml(message)}</td></tr>`;
+    `<tr><td colspan="${lbScope === LB_SCOPES.today ? 4 : 7}" class="lb-loading">${escapeHtml(message)}</td></tr>`;
 }
 
 function renderYourRank(rows) {
@@ -326,6 +388,16 @@ function getRankClass(rank) {
 
 function formatAvgGuesses(value) {
   return value === null ? '-' : value.toFixed(2);
+}
+
+function formatTodayGuessPattern(row) {
+  const score = row.todayScore;
+  if (!score) return '-';
+  const maxAttempts = parseInt(score.max_attempts, 10) || row.puzzleCount || 6;
+  const attempts = clamp(parseInt(score.attempts_used, 10) || maxAttempts, 1, maxAttempts);
+  if (!score.won) return '⬛'.repeat(Math.max(0, maxAttempts - 1)) + '🟥';
+  if (attempts === 1) return '🐉';
+  return '⬛'.repeat(attempts - 1) + '🟩';
 }
 
 function formatTotalTime(ms) {
