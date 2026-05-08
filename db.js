@@ -1,0 +1,183 @@
+/* ============================================================
+   SPYRO HEARDLE — db.js
+   Supabase API layer. Loaded by game.js, leaderboard.js, admin.js
+   ============================================================ */
+
+const DB = (() => {
+  let _url = null;
+  let _key = null;
+
+  function init(url, key) {
+    _url = url.replace(/\/$/, '');
+    _key = key;
+  }
+
+  function headers(extra = {}) {
+    return {
+      'Content-Type': 'application/json',
+      'apikey': _key,
+      'Authorization': `Bearer ${_key}`,
+      ...extra,
+    };
+  }
+
+  async function get(table, params = '') {
+    const res = await fetch(`${_url}/rest/v1/${table}?${params}`, {
+      headers: headers({ 'Accept': 'application/json' }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
+
+  async function post(table, body) {
+    const res = await fetch(`${_url}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: headers({ 'Prefer': 'return=representation' }),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
+
+  async function patch(table, params, body) {
+    const res = await fetch(`${_url}/rest/v1/${table}?${params}`, {
+      method: 'PATCH',
+      headers: headers({ 'Prefer': 'return=representation' }),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  }
+
+  async function del(table, params) {
+    const res = await fetch(`${_url}/rest/v1/${table}?${params}`, {
+      method: 'DELETE',
+      headers: headers(),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return true;
+  }
+
+  // Player identity hashing
+  // Device secret hashing. Stored in the legacy pin_hash column.
+  async function hashDeviceSecret(secret, salt) {
+    const data = new TextEncoder().encode(salt + secret + 'spyro-heardle-salt');
+    const buf  = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Generate a random local ID
+  function generateLocalId() {
+    return 'local_' + crypto.randomUUID();
+  }
+
+  // ── Player operations ───────────────────────────────────────
+
+  async function checkNickname(nickname) {
+    // Returns player row if exists, null if free
+    const rows = await get('players', `nickname=ilike.${encodeURIComponent(nickname)}&select=id,nickname,is_banned`);
+    return rows.length ? rows[0] : null;
+  }
+
+  async function registerPlayer(nickname) {
+    const localId = generateLocalId();
+    const salt    = nickname.toLowerCase();
+    const deviceSecret = crypto.randomUUID();
+    const pinHash = await hashDeviceSecret(deviceSecret, salt);
+    const rows    = await post('players', { nickname, pin_hash: pinHash, local_id: localId });
+    return { ...rows[0], localId };
+  }
+
+  // ── Score operations ────────────────────────────────────────
+
+  async function submitScore({ playerId, day, attemptsUsed, maxAttempts, won, timeMs, playedOnDay }) {
+    // Upsert — if score for this day already exists, skip
+    try {
+      await post('scores', {
+        player_id:     playerId,
+        day,
+        attempts_used: attemptsUsed,
+        max_attempts:  maxAttempts,
+        won,
+        time_ms:       timeMs || null,
+        played_on_day: playedOnDay,
+      });
+      return true;
+    } catch (e) {
+      // Unique constraint violation = already submitted, that's fine
+      if (e.message.includes('duplicate') || e.message.includes('unique')) return false;
+      throw e;
+    }
+  }
+
+  async function getLeaderboard(totalPuzzles) {
+    const rows = await get('leaderboard_stats', 'order=total_points.desc,total_time_ms.asc&limit=100');
+    // Normalize: score = total_points / totalPuzzles * 100
+    return rows.map((r, i) => ({
+      rank:         i + 1,
+      id:           r.id,
+      nickname:     r.nickname,
+      daysPlayed:   parseInt(r.days_played) || 0,
+      totalPoints:  parseInt(r.total_points) || 0,
+      normalizedScore: totalPuzzles > 0
+        ? Math.round((parseInt(r.total_points) || 0) / totalPuzzles * 100) / 100
+        : 0,
+      totalTimeMs:  parseInt(r.total_time_ms) || 0,
+      totalWins:    parseInt(r.total_wins) || 0,
+    }));
+  }
+
+  async function getLeaderboardPlayers() {
+    return get('players', 'select=id,nickname,is_banned&is_banned=eq.false&order=nickname.asc&limit=10000');
+  }
+
+  async function getLeaderboardScores() {
+    return get('scores', 'select=player_id,day,attempts_used,max_attempts,won,time_ms,played_on_day&limit=10000');
+  }
+
+  async function getTodayCount() {
+    const rows = await get('today_player_count', '');
+    return rows.length ? (parseInt(rows[0].count) || 0) : 0;
+  }
+
+  // ── Admin operations ────────────────────────────────────────
+
+  async function banPlayer(playerId) {
+    return patch('players', `id=eq.${playerId}`, { is_banned: true });
+  }
+
+  async function unbanPlayer(playerId) {
+    return patch('players', `id=eq.${playerId}`, { is_banned: false });
+  }
+
+  async function deletePlayer(playerId) {
+    // Cascade deletes scores too (set up in SQL)
+    return del('players', `id=eq.${playerId}`);
+  }
+
+  async function getAllPlayers() {
+    return get('players', 'select=id,nickname,created_at,is_banned&order=created_at.desc');
+  }
+
+  async function getPlayerScores(playerId) {
+    return get('scores', `player_id=eq.${playerId}&order=day.asc`);
+  }
+
+  return {
+    init,
+    hashDeviceSecret,
+    generateLocalId,
+    checkNickname,
+    registerPlayer,
+    submitScore,
+    getLeaderboard,
+    getLeaderboardPlayers,
+    getLeaderboardScores,
+    getTodayCount,
+    banPlayer,
+    unbanPlayer,
+    deletePlayer,
+    getAllPlayers,
+    getPlayerScores,
+  };
+})();

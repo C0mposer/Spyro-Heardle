@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spyro Heardle</title>
@@ -18,14 +17,15 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="archive.html" class="archive-link">◈ Previous Days</a>
+        <a href="archive.html" class="archive-link">Previous Days</a>
       </div>
       <h1 class="site-title">
         <span class="title-spyro">Spyro</span>
         <span class="title-heardle">Heardle</span>
       </h1>
       <div class="header-right">
-        <a href="stats.html" class="archive-link">Stats ◈</a>
+        <a href="stats.html" class="archive-link">Stats</a>
+        <a href="leaderboard.html" class="archive-link">Leaderboard 🏆</a>
         <span class="day-badge" id="dayBadge">#—</span>
       </div>
     </div>
@@ -58,6 +58,7 @@
           </button>
           <div class="progress-track">
             <div class="progress-fill" id="progressFill"></div>
+            <input type="range" id="seekSlider" class="seek-slider hidden" min="0" max="1000" step="1" value="0" />
           </div>
           <span class="time-display" id="timeDisplay">0:00</span>
         </div>
@@ -104,6 +105,10 @@
           <span class="result-time-icon">⏱</span>
           <span class="result-time-value" id="resultTimeValue"></span>
         </div>
+        <div class="today-count-badge hidden" id="todayCountBadge">
+          <span>♫</span>
+          <span id="todayCountText">— people played today</span>
+        </div>
         <div class="streak-display hidden" id="streakDisplay">
           <span class="streak-fire">🔥</span>
           <span class="streak-count" id="streakCount"></span>
@@ -114,7 +119,7 @@
           <span class="countdown-timer" id="countdownTimer">—</span>
         </div>
         <button class="btn-share" id="btnShare">Copy Result ◈</button>
-        <a class="btn-archive" href="archive.html">View Archive →</a>
+        <a class="btn-archive" href="archive.html">Previous Days →</a>
       </div>
 
       <!-- Confetti canvas (full screen, pointer-events none) -->
@@ -129,6 +134,8 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="db.js"></script>
+  <script src="identity.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

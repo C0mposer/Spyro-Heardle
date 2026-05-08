@@ -1,3 +1,8 @@
+/* ============================================================
+   SPYRO HEARDLE — game.js
+   Core game logic, audio, autocomplete, sharing
+   ============================================================ */
+
 // ── Constants ──────────────────────────────────────────────
 const CONFIG_URL  = 'config.json';
 const STORAGE_KEY = 'spyro-heardle-state';
@@ -56,8 +61,8 @@ let spyroParticleImages = null;
 
 async function loadSpyroParticleImages() {
   const found = [];
-  // Try up to 20 candidate images: particles/spyro1.png … spyro20.png (made 13 for now, since I don't have 20)
-  const checks = Array.from({ length: 13 }, (_, i) => {
+  // Try up to 20 candidate images: particles/spyro1.png … spyro20.png
+  const checks = Array.from({ length: 20 }, (_, i) => {
     return new Promise(resolve => {
       const img = new Image();
       const src = `particles/spyro${i + 1}.png`;
@@ -311,6 +316,11 @@ function bindAudioEvents() {
     $('progressFill').style.width = (pct * 100) + '%';
     $('timeDisplay').textContent = formatTime(audio.currentTime);
     updateWaveform(pct);
+    // Keep seek slider in sync while playing
+    const seek = $('seekSlider');
+    if (seek && !seek.classList.contains('hidden') && !seek._seeking) {
+      seek.value = Math.round(pct * 1000);
+    }
   });
 
   audio.addEventListener('ended', () => {
@@ -318,6 +328,8 @@ function bindAudioEvents() {
     updateWaveform(0);
     $('progressFill').style.width = '0%';
     $('timeDisplay').textContent = '0:00';
+    const seek = $('seekSlider');
+    if (seek) seek.value = 0;
   });
 
   audio.addEventListener('play',  () => updatePlayButton(true));
@@ -331,6 +343,39 @@ function bindAudioEvents() {
     });
     updateVolumeTrack(slider);
   }
+}
+
+function enableSeeking() {
+  const seek = $('seekSlider');
+  const track = document.querySelector('.progress-track');
+  if (!seek || !track) return;
+
+  seek.classList.remove('hidden');
+  track.classList.add('seekable');
+
+  // While dragging — pause updates from timeupdate and scrub visually
+  seek.addEventListener('mousedown',  () => { seek._seeking = true; });
+  seek.addEventListener('touchstart', () => { seek._seeking = true; }, { passive: true });
+
+  seek.addEventListener('input', () => {
+    const pct = parseInt(seek.value) / 1000;
+    $('progressFill').style.width = (pct * 100) + '%';
+    updateWaveform(pct);
+    if (audio.duration) {
+      $('timeDisplay').textContent = formatTime(audio.duration * pct);
+    }
+  });
+
+  seek.addEventListener('change', () => {
+    const pct = parseInt(seek.value) / 1000;
+    if (audio.duration) {
+      audio.currentTime = audio.duration * pct;
+    }
+    seek._seeking = false;
+  });
+
+  seek.addEventListener('mouseup',  () => { seek._seeking = false; });
+  seek.addEventListener('touchend', () => { seek._seeking = false; });
 }
 
 function updateVolumeTrack(slider) {
@@ -736,6 +781,14 @@ function endGame(won) {
 
   // Make all stem chips clickable
   makeChipsClickable();
+  enableSeeking();
+
+  // Submit score to leaderboard (silent, background)
+  submitCurrentScore();
+  if (isTodayPuzzle()) {
+    revealTodayCountFallback();
+    loadTodayCount();
+  }
 
   // If we're already playing the last stem (full mix), just let it keep going.
   // Otherwise load and autoplay the full mix from the start.
@@ -772,6 +825,10 @@ function loadStemByIndex(idx, autoplay) {
   audio.pause();
   audio.src = src;
   audio.load();
+
+  // Reset seek slider position
+  const seek = $('seekSlider');
+  if (seek) seek.value = 0;
 
   if (autoplay) {
     // Use canplay so it fires once the browser has enough data
@@ -820,7 +877,7 @@ function buildShareText() {
 function buildShareUrl(day) {
   const base = window.location.origin + window.location.pathname.replace('index.html', '');
   const todayDay = getDayNumberForToday(config);
-  // Only include ?day= for archive days
+  // Only include ?day= for archive days — today's link should be clean
   if (day !== todayDay) return `${base}?day=${day}`;
   return base;
 }
@@ -882,6 +939,7 @@ function restoreGameState(saved) {
     // Load full mix (no autoplay on restore — user can press play)
     loadStemByIndex(puzzle.stems.length - 1, false);
     makeChipsClickable();
+    enableSeeking();
   } else {
     updateStemBar();
     loadStem(currentStem);
@@ -1036,6 +1094,136 @@ async function init() {
     restoreGameState(saved);
   } else {
     loadStem(0);
+  }
+
+  // Init leaderboard features if supabase is configured
+  if (config.supabase) {
+    DB.init(config.supabase.url, config.supabase.anonKey);
+    if (saved?.gameOver && isTodayPuzzle()) {
+      revealTodayCountFallback();
+      loadTodayCount();
+    }
+    // Show identity modal on first visit
+    initIdentityModal(() => {
+      // After identity is set, silently submit any unsubmitted scores from the past 5 days
+      submitPastScores();
+    });
+  }
+}
+
+// ── Today count ─────────────────────────────────────────────
+
+async function loadTodayCount() {
+  if (!isTodayPuzzle()) return;
+  try {
+    const count = await DB.getTodayCount();
+    const badge = ensureTodayCountBadge();
+    const text  = $('todayCountText');
+    if (!badge || !text) return;
+    text.innerHTML = `<span class="count-num">${count}</span> ${count === 1 ? 'person has' : 'people have'} played today`;
+    showTodayCountBadge(badge);
+  } catch { /* silent fail */ }
+}
+
+function revealTodayCountFallback() {
+  const badge = ensureTodayCountBadge();
+  const text = $('todayCountText');
+  if (text && !text.querySelector('.count-num')) {
+    text.textContent = 'Loading today\'s play count...';
+  }
+  showTodayCountBadge(badge);
+}
+
+function ensureTodayCountBadge() {
+  let badge = $('todayCountBadge');
+  const panel = $('resultPanel');
+  if (!panel) return badge;
+
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.className = 'today-count-badge hidden';
+    badge.id = 'todayCountBadge';
+    badge.innerHTML = `<span>♫</span><span id="todayCountText">Loading today's play count...</span>`;
+  }
+
+  if (badge.parentElement !== panel) {
+    const anchor = $('streakDisplay') || $('next-puzzle-countdown');
+    panel.insertBefore(badge, anchor);
+  }
+
+  return badge;
+}
+
+function showTodayCountBadge(badge) {
+  if (!badge) return;
+  badge.classList.remove('hidden');
+  void badge.offsetWidth;
+  badge.classList.add('show');
+}
+
+function isTodayPuzzle() {
+  return config && dayNumber === getDayNumberForToday(config);
+}
+
+// ── Score submission ─────────────────────────────────────────
+
+async function submitCurrentScore() {
+  if (!config.supabase) return;
+  const playerId = Identity.getPlayerId();
+  if (!playerId) return; // local player
+
+  const state = loadStateForDay(dayNumber);
+  if (!state || !state.gameOver) return;
+
+  // Only submit if this is actually today's puzzle
+  const todayDay = getDayNumberForToday(config);
+  const playedOnDay = dayNumber === todayDay;
+
+  try {
+    await DB.submitScore({
+      playerId,
+      day:          dayNumber,
+      attemptsUsed: state.attempts.length,
+      maxAttempts:  puzzle.maxAttempts,
+      won:          state.attempts.some(a => a.type === 'correct'),
+      timeMs:       state.timerFinalMs || null,
+      playedOnDay,
+    });
+    // Refresh today count after submission
+    loadTodayCount();
+  } catch { /* silent fail */ }
+}
+
+async function submitPastScores() {
+  if (!config.supabase) return;
+  const playerId = Identity.getPlayerId();
+  if (!playerId) return;
+
+  const allState = loadAllState();
+  const todayDay = getDayNumberForToday(config);
+
+  for (const [dayStr, state] of Object.entries(allState)) {
+    const day = parseInt(dayStr);
+    if (!state.gameOver) continue;
+
+    // For past days before leaderboard was added, assume played on day
+    // For current and future days, only count if it's today's puzzle
+    const playedOnDay = day <= todayDay;
+
+    const p = config.puzzles.find(p => p.day === day);
+    if (!p) continue;
+
+    try {
+      await DB.submitScore({
+        playerId,
+        day,
+        attemptsUsed: state.attempts.length,
+        maxAttempts:  p.maxAttempts,
+        won:          state.attempts.some(a => a.type === 'correct'),
+        timeMs:       state.timerFinalMs || null,
+        playedOnDay:  day < todayDay ? true : (day === todayDay), // assume all past days were on-day
+      });
+    } catch { /* duplicate or error — skip */ }
   }
 }
 

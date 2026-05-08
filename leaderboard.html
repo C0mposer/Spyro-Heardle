@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard - Spyro Heardle</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="bg-layer"></div>
+  <div class="gem-particles" id="gemParticles"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="index.html" class="archive-link">Today</a>
+      </div>
+      <h1 class="site-title">
+        <span class="title-spyro">Spyro</span>
+        <span class="title-heardle">Heardle</span>
+      </h1>
+      <div class="header-right">
+        <a href="stats.html" class="archive-link">Stats</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="lb-container">
+
+    <div class="lb-hero">
+      <div class="lb-trophy" aria-hidden="true">🏆</div>
+      <h2 class="lb-heading">Leaderboard</h2>
+      <p class="lb-sub" id="lbSub">Ranked by fewest guesses</p>
+      <div class="lb-tabs" role="tablist" aria-label="Leaderboard views">
+        <button class="lb-tab active" data-scope="all" role="tab" aria-selected="true">All Time</button>
+        <button class="lb-tab" data-scope="month" role="tab" aria-selected="false">This Month</button>
+        <button class="lb-tab" data-scope="today" role="tab" aria-selected="false">Today</button>
+      </div>
+      <div class="lb-refresh-row">
+        <span class="lb-update-time" id="lbUpdateTime">Loading...</span>
+        <button class="lb-refresh-btn" id="lbRefreshBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div class="lb-join-panel hidden" id="lbJoinPanel">
+      <span id="lbIdentityLabel">Choose a unique name to rank this device on the leaderboard.</span>
+      <button class="lb-join-btn" id="lbJoinBtn">Join Leaderboard</button>
+    </div>
+
+    <div class="lb-podium" id="lbPodium"></div>
+
+    <div class="lb-table-wrap">
+      <table class="lb-table" id="lbTable">
+        <thead>
+          <tr>
+            <th class="col-rank">Rank</th>
+            <th class="col-name">Player</th>
+            <th class="col-wins">Wins</th>
+            <th class="col-played">Played</th>
+            <th class="col-avg">Avg</th>
+            <th class="col-time">Total Time</th>
+          </tr>
+        </thead>
+        <tbody id="lbTableBody">
+          <tr><td colspan="6" class="lb-loading">Loading leaderboard...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lb-your-rank hidden" id="lbYourRank"></div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Spyro Heardle — By: Composer</p>
+  </footer>
+
+  <script src="game.js"></script>
+  <script src="db.js"></script>
+  <script src="identity.js"></script>
+  <script src="leaderboard.js"></script>
+</body>
+</html>
