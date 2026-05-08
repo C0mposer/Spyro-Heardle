@@ -116,7 +116,7 @@ function buildModal() {
 
       <div class="step" id="step-name">
         <h3 class="id-step-title">Choose a leaderboard name</h3>
-        <p class="id-step-sub">This unique name is saved on this device.</p>
+        <p class="id-step-sub">Your name is saved on this device.</p>
         <input type="text" id="idNicknameInput" class="id-input" placeholder="Your name..." maxlength="20" autocomplete="off" />
         <p class="id-error" id="idNameError"></p>
         <button class="id-btn id-primary-btn" id="idNicknameSubmit">Join Leaderboard</button>
