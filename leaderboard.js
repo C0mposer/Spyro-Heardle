@@ -213,6 +213,7 @@ function renderPodium(top3) {
         <div class="podium-score-label">wins</div>
         <div class="podium-platform ${slot.height}">
           <div class="podium-rank-label">${slot.label}</div>
+          <div class="podium-first">${slot.data.firstTryWins} first ${slot.data.firstTryWins === 1 ? 'try' : 'tries'}</div>
           <div class="podium-days">${slot.data.played}/${slot.data.puzzleCount} played</div>
           <div class="podium-time">${formatTotalTime(slot.data.totalTimeMs)}</div>
         </div>
@@ -240,6 +241,7 @@ function renderTable(rows) {
           <span class="player-name">${escapeHtml(r.nickname)}</span>
           ${isMe ? '<span class="you-badge">You</span>' : ''}
         </td>
+        <td class="col-first">${r.firstTryWins}</td>
         <td class="col-wins">${r.wins}/${r.puzzleCount}</td>
         <td class="col-played">${r.played}</td>
         <td class="col-avg">${formatAvgGuesses(r.avgGuesses)}</td>
@@ -251,7 +253,7 @@ function renderTable(rows) {
 
 function renderTableMessage(message) {
   document.getElementById('lbTableBody').innerHTML =
-    `<tr><td colspan="6" class="lb-loading">${escapeHtml(message)}</td></tr>`;
+    `<tr><td colspan="7" class="lb-loading">${escapeHtml(message)}</td></tr>`;
 }
 
 function renderYourRank(rows) {

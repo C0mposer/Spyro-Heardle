@@ -1059,7 +1059,7 @@ main {
 
 /* ── Leaderboard page ── */
 .lb-container {
-  max-width: 760px;
+  max-width: 980px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 5rem;
   position: relative;
@@ -1265,9 +1265,9 @@ main {
   gap: 0.2rem;
 }
 
-.podium-h1 { min-height: 110px; }
-.podium-h2 { min-height: 80px; }
-.podium-h3 { min-height: 60px; }
+.podium-h1 { min-height: 145px; }
+.podium-h2 { min-height: 98px; }
+.podium-h3 { min-height: 74px; }
 
 .podium-rank-label {
   font-family: var(--font-display);
@@ -1278,11 +1278,16 @@ main {
   margin-bottom: 0.2rem;
 }
 
-.podium-days, .podium-time {
+.podium-first, .podium-days, .podium-time {
   font-family: var(--font-display);
   font-size: 0.6rem;
   letter-spacing: 0.06em;
   color: rgba(255,255,255,0.6);
+}
+
+.podium-first {
+  color: var(--gold-light);
+  font-weight: 700;
 }
 
 /* Gold */
@@ -1322,13 +1327,14 @@ main {
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
   backdrop-filter: blur(10px);
   margin-bottom: 1rem;
 }
 
 .lb-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -1401,11 +1407,13 @@ main {
   padding: 2rem;
 }
 
-.col-rank   { width: 60px; }
-.col-wins   { width: 85px; }
-.col-played { width: 70px; }
-.col-avg    { width: 70px; }
-.col-time   { width: 95px; }
+.col-rank   { width: 70px; }
+.col-name   { min-width: 190px; }
+.col-first  { width: 120px; }
+.col-wins   { width: 95px; }
+.col-played { width: 85px; }
+.col-avg    { width: 80px; }
+.col-time   { width: 115px; }
 
 /* Your rank (outside top 100) */
 .lb-your-rank {
