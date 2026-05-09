@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const allState  = loadAllState();   // { dayNum: { attempts, gameOver, currentStem } }
-  const streakData = loadStreak();
 
   // Only count days where the game is over (fully played)
   const played = Object.entries(allState)
@@ -39,26 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const winPct        = Math.round((wins.length / totalPlayed) * 100);
   const dragonWins    = wins.filter(d => d.attempts.length === 1 && d.attempts[0].type === 'correct');
 
-  // Best streak — scan through days in order
-  let bestStreak = streakData.current;
-  {
-    // Recompute from history for accuracy
-    const dayNums = played.map(d => d.day).sort((a, b) => a - b);
-    let cur = 0, best = 0;
-    dayNums.forEach((day, i) => {
-      const won = played.find(d => d.day === day).attempts.some(a => a.type === 'correct');
-      if (won) {
-        const prevDay = i > 0 ? dayNums[i - 1] : null;
-        cur = (prevDay === day - 1) ? cur + 1 : 1;
-        best = Math.max(best, cur);
-      } else {
-        cur = 0;
-      }
-    });
-    bestStreak = best;
-  }
 
-  // Guess distribution — which attempt index the win happened on (1-based)
+  const streaks = computeDailyStreaks(played, cfg);
+  const bestNonDailyStreak = computeBestNonDailyStreak(played);
+
+  // Guess distribution - which attempt index the win happened on (1-based)
   // We track "stem index when won" (how many stems were heard)
   const distMap = {}; // stemIndex (1-based) → count
   wins.forEach(d => {
@@ -81,8 +65,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ── Render summary cards ──
   animateCount('statPlayed',     totalPlayed);
   animateCount('statWinPct',     winPct, '%');
-  animateCount('statStreak',     streakData.current, streakData.current === 1 ? ' day' : ' days');
-  animateCount('statBestStreak', bestStreak, bestStreak === 1 ? ' day' : ' days');
+  animateCount('statStreak',     streaks.current, streaks.current === 1 ? ' day' : ' days');
+  animateCount('statBestStreak', streaks.best, streaks.best === 1 ? ' day' : ' days');
+  animateCount('statNonDailyStreak', bestNonDailyStreak, bestNonDailyStreak === 1 ? ' day' : ' days');
 
   // ── Render distribution chart ──
   const distChart = document.getElementById('distChart');
@@ -220,4 +205,62 @@ function animateCount(id, target, suffix = '') {
     if (progress < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+}
+
+function computeDailyStreaks(played, cfg) {
+  if (!cfg) return { current: 0, best: 0 };
+
+  const byDay = new Map(played.map(d => [d.day, d]));
+  const todayDay = getDayNumberForToday(cfg);
+  let current = 0;
+  let best = 0;
+  let run = 0;
+
+  cfg.puzzles
+    .filter(p => p.day <= todayDay)
+    .sort((a, b) => a.day - b.day)
+    .forEach(puzzle => {
+      const state = byDay.get(puzzle.day);
+      const wonOnDay = Boolean(
+        state?.playedOnDay &&
+        state.attempts?.some(a => a.type === 'correct')
+      );
+
+      if (wonOnDay) {
+        run++;
+        best = Math.max(best, run);
+      } else {
+        run = 0;
+      }
+
+      if (puzzle.day === todayDay) {
+        current = wonOnDay ? run : 0;
+      }
+    });
+
+  return { current, best };
+}
+
+function computeBestNonDailyStreak(played) {
+  const playedByDay = [...new Map(played.map(d => [d.day, d])).values()]
+    .sort((a, b) => a.day - b.day);
+
+  let best = 0;
+  let run = 0;
+  let previousDay = null;
+
+  playedByDay.forEach(state => {
+    const won = state.attempts?.some(a => a.type === 'correct');
+
+    if (won) {
+      run = previousDay === state.day - 1 ? run + 1 : 1;
+      best = Math.max(best, run);
+    } else {
+      run = 0;
+    }
+
+    previousDay = state.day;
+  });
+
+  return best;
 }

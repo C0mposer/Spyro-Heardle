@@ -544,7 +544,15 @@ function selectSong(name) {
 
 function saveState() {
   const saved = loadAllState();
-  saved[dayNumber] = { attempts, gameOver, currentStem, timerFinalMs };
+  const existing = saved[dayNumber] || {};
+  saved[dayNumber] = {
+    ...existing,
+    attempts,
+    gameOver,
+    currentStem,
+    timerFinalMs,
+    playedOnDay: existing.playedOnDay ?? isTodayPuzzle(),
+  };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 }
 
@@ -573,6 +581,8 @@ function saveStreak(data) {
 
 function updateStreak(won) {
   const streak = loadStreak();
+  if (!isTodayPuzzle()) return streak;
+
   if (won) {
     const prevDay = dayNumber - 1;
     if (streak.lastWonDay === prevDay || streak.lastWonDay === null) {
@@ -765,7 +775,7 @@ function endGame(won) {
 
   // Streak
   const streak = updateStreak(won);
-  if (won && streak.current >= 2) {
+  if (won && isTodayPuzzle() && streak.current >= 2) {
     const sd = $('streakDisplay');
     sd.classList.remove('hidden');
     $('streakCount').textContent = streak.current;
@@ -929,7 +939,7 @@ function restoreGameState(saved) {
     }
     // Restore streak display if applicable
     const streak = loadStreak();
-    if (won && streak.current >= 2 && streak.lastWonDay === dayNumber) {
+    if (won && saved.playedOnDay && streak.current >= 2 && streak.lastWonDay === dayNumber) {
       const sd = $('streakDisplay');
       sd.classList.remove('hidden');
       $('streakCount').textContent = streak.current;

@@ -1225,17 +1225,24 @@ main {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  --podium-name-color: var(--text-primary);
+  --podium-name-glow: rgba(255,255,255,0.28);
 }
 
 .podium-medal { font-size: 2rem; margin-bottom: 0.4rem; }
 
 .podium-nickname {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: clamp(1rem, 2vw, 1.15rem);
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--podium-name-color);
   margin-bottom: 0.2rem;
+  line-height: 1.15;
   word-break: break-word;
+  overflow-wrap: anywhere;
+  transform-origin: center;
+  text-shadow: 0 0 6px var(--podium-name-glow), 0 0 12px var(--podium-name-glow);
+  animation: podiumNamePulse 3.4s ease-in-out 1.2s infinite;
 }
 
 .podium-score {
@@ -1258,16 +1265,21 @@ main {
 .podium-platform {
   width: 100%;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-sizing: border-box;
   padding: 0.75rem 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.2rem;
+  height: var(--podium-height);
+  overflow: hidden;
+  transform-origin: bottom center;
+  will-change: clip-path, opacity, transform;
 }
 
-.podium-h1 { min-height: 145px; }
-.podium-h2 { min-height: 98px; }
-.podium-h3 { min-height: 74px; }
+.podium-h1 { --podium-height: 145px; }
+.podium-h2 { --podium-height: 98px; }
+.podium-h3 { --podium-height: 82px; }
 
 .podium-rank-label {
   font-family: var(--font-display);
@@ -1291,31 +1303,56 @@ main {
 }
 
 /* Gold */
+.podium-gold {
+  --podium-name-color: var(--gold-bright);
+  --podium-name-glow: rgba(240,180,41,0.62);
+}
+.podium-gold .podium-nickname { font-size: clamp(1.12rem, 2.4vw, 1.35rem); }
 .podium-gold .podium-score   { color: var(--gold-bright); filter: drop-shadow(0 0 10px rgba(240,180,41,0.6)); }
 .podium-gold .podium-platform {
   background: linear-gradient(160deg, rgba(122,79,0,0.7) 0%, rgba(200,130,10,0.5) 100%);
   border: 1px solid rgba(240,180,41,0.4);
   box-shadow: 0 0 30px rgba(240,180,41,0.2), inset 0 1px 0 rgba(255,215,0,0.2);
+  animation-delay: 0.05s;
 }
 .podium-gold .podium-rank-label { color: var(--gold-bright); }
 
 /* Silver */
+.podium-silver {
+  --podium-name-color: #d7cbff;
+  --podium-name-glow: rgba(155,89,245,0.5);
+}
 .podium-silver .podium-score   { color: #c0c0e0; filter: drop-shadow(0 0 8px rgba(155,89,245,0.5)); }
 .podium-silver .podium-platform {
   background: linear-gradient(160deg, rgba(26,13,46,0.8) 0%, rgba(107,53,200,0.4) 100%);
   border: 1px solid rgba(155,89,245,0.4);
   box-shadow: 0 0 20px rgba(155,89,245,0.15);
+  animation-delay: 0.13s;
 }
 .podium-silver .podium-rank-label { color: var(--purple-light); }
 
 /* Bronze */
+.podium-bronze {
+  --podium-name-color: var(--fire-glow);
+  --podium-name-glow: rgba(255,106,26,0.48);
+}
 .podium-bronze .podium-score   { color: var(--fire-glow); filter: drop-shadow(0 0 8px rgba(255,106,26,0.4)); }
 .podium-bronze .podium-platform {
   background: linear-gradient(160deg, rgba(122,26,0,0.6) 0%, rgba(217,69,0,0.35) 100%);
   border: 1px solid rgba(255,106,26,0.35);
   box-shadow: 0 0 20px rgba(255,106,26,0.1);
+  animation-delay: 0.21s;
 }
 .podium-bronze .podium-rank-label { color: var(--fire-glow); }
+
+@keyframes podiumNamePulse {
+  0%, 100% {
+    text-shadow: 0 0 4px var(--podium-name-glow), 0 0 8px rgba(255,255,255,0.1);
+  }
+  50% {
+    text-shadow: 0 0 10px var(--podium-name-glow), 0 0 24px var(--podium-name-glow);
+  }
+}
 
 /* "You" highlight on podium */
 .podium-me .podium-nickname {
@@ -1565,7 +1602,7 @@ main {
 /* ── Summary cards ── */
 .stat-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.75rem;
   margin-bottom: 2.5rem;
 }
@@ -1601,6 +1638,11 @@ main {
   background: linear-gradient(160deg, rgba(26,13,46,0.9) 0%, rgba(200,130,10,0.2) 100%);
 }
 
+.stat-card--purple {
+  border-color: rgba(154, 101, 255, 0.4);
+  background: linear-gradient(160deg, rgba(26,13,46,0.9) 0%, rgba(91,45,172,0.25) 100%);
+}
+
 .stat-value {
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -1613,6 +1655,7 @@ main {
 .stat-card--gold  .stat-value { color: var(--gold-bright); }
 .stat-card--fire  .stat-value { color: var(--fire-bright); }
 .stat-card--dragon .stat-value { color: var(--gold-light); }
+.stat-card--purple .stat-value { color: var(--purple-light); }
 
 .stat-label {
   font-family: var(--font-display);
@@ -1620,6 +1663,7 @@ main {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
+  line-height: 1.25;
 }
 
 /* ── Section wrapper ── */

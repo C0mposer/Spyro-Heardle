@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindControls();
   updateIdentityPanel();
   updateSyncWidget();
-  await loadLeaderboard();
+  await loadLeaderboard({ animatePodium: true });
 
-  refreshTimer = setInterval(loadLeaderboard, 30000);
+  refreshTimer = setInterval(() => loadLeaderboard({ animatePodium: false }), 30000);
 });
 
 function bindControls() {
-  document.getElementById('lbRefreshBtn')?.addEventListener('click', loadLeaderboard);
+  document.getElementById('lbRefreshBtn')?.addEventListener('click', () => loadLeaderboard({ animatePodium: true }));
   document.getElementById('lbSyncBtn')?.addEventListener('click', handleSyncClick);
 
   document.querySelectorAll('.lb-tab').forEach(btn => {
@@ -52,7 +52,7 @@ function bindControls() {
         tab.classList.toggle('active', tab === btn);
         tab.setAttribute('aria-selected', tab === btn ? 'true' : 'false');
       });
-      renderLeaderboard();
+      renderLeaderboard({ animatePodium: true });
     });
   });
 
@@ -63,12 +63,12 @@ function bindControls() {
       myPlayerId = Identity.getPlayerId();
       updateIdentityPanel();
       updateSyncWidget();
-      await loadLeaderboard();
+      await loadLeaderboard({ animatePodium: true });
     });
   });
 }
 
-async function loadLeaderboard() {
+async function loadLeaderboard({ animatePodium = false } = {}) {
   try {
     const [players, scores] = await Promise.all([
       DB.getLeaderboardPlayers(),
@@ -76,7 +76,7 @@ async function loadLeaderboard() {
     ]);
 
     lbData = buildLeaderboardData(lbConfig, players, scores);
-    renderLeaderboard();
+    renderLeaderboard({ animatePodium });
     document.getElementById('lbUpdateTime').textContent =
       'Updated ' + new Date().toLocaleTimeString();
   } catch (e) {
@@ -169,10 +169,10 @@ function getScopePuzzles(cfg, scope) {
   return released;
 }
 
-function renderLeaderboard() {
+function renderLeaderboard({ animatePodium = false } = {}) {
   const rows = getRowsForScope(lbScope);
   renderScopeSummary(rows);
-  renderPodium(rows.slice(0, 3));
+  renderPodium(rows.slice(0, 3), animatePodium);
   renderTableHeader();
   renderTable(rows);
   renderYourRank(rows);
@@ -232,14 +232,14 @@ function renderScopeSummary(rows) {
   sub.textContent = 'Ranked by fewest guesses';
 }
 
-function renderPodium(top3) {
+function renderPodium(top3, animatePodium = false) {
   const el = document.getElementById('lbPodium');
   if (!top3.length) { el.innerHTML = ''; return; }
 
   const slots = [
-    { data: top3[1], cls: 'podium-silver', height: 'podium-h2', label: '2nd', medal: '2' },
-    { data: top3[0], cls: 'podium-gold', height: 'podium-h1', label: '1st', medal: '1' },
-    { data: top3[2], cls: 'podium-bronze', height: 'podium-h3', label: '3rd', medal: '3' },
+    { data: top3[1], cls: 'podium-silver', height: 'podium-h2', label: '2nd', medal: '2', rank: 2 },
+    { data: top3[0], cls: 'podium-gold', height: 'podium-h1', label: '1st', medal: '1', rank: 1 },
+    { data: top3[2], cls: 'podium-bronze', height: 'podium-h3', label: '3rd', medal: '3', rank: 3 },
   ].filter(s => s.data);
 
   el.innerHTML = slots.map(slot => {
@@ -248,7 +248,7 @@ function renderPodium(top3) {
       ? ''
       : `<div class="podium-days">${slot.data.played}/${slot.data.puzzleCount} played</div>`;
     return `
-      <div class="podium-slot ${slot.cls} ${isMe ? 'podium-me' : ''}">
+      <div class="podium-slot ${slot.cls} ${isMe ? 'podium-me' : ''}" data-rank="${slot.rank}">
         <div class="podium-medal">${slot.medal}</div>
         <div class="podium-nickname">${escapeHtml(slot.data.nickname)}${isMe ? ' <span class="you-badge">You</span>' : ''}</div>
         <div class="podium-score">${slot.data.wins}</div>
@@ -262,6 +262,105 @@ function renderPodium(top3) {
       </div>
     `;
   }).join('');
+
+  if (animatePodium) {
+    replayPodiumAnimation(el);
+  }
+}
+
+function replayPodiumAnimation(el) {
+  const platforms = [...el.querySelectorAll('.podium-platform')];
+  const names = [...el.querySelectorAll('.podium-nickname')];
+  const scoreLabels = [...el.querySelectorAll('.podium-score, .podium-score-label')];
+  const revealDelayByRank = { 3: 0, 2: 170, 1: 380 };
+
+  if (!Element.prototype.animate) {
+    platforms.forEach(platform => {
+      platform.style.clipPath = 'inset(0 0 0 0)';
+      platform.style.opacity = '1';
+      platform.style.transform = 'translateY(0)';
+    });
+    names.forEach(name => {
+      name.style.opacity = '1';
+      name.style.transform = 'translateY(0)';
+    });
+    scoreLabels.forEach(score => {
+      score.style.opacity = '1';
+      score.style.transform = 'translateY(0)';
+    });
+    return;
+  }
+
+  platforms.forEach(platform => {
+    platform.style.clipPath = 'inset(100% 0 0 0)';
+    platform.style.opacity = '0.15';
+    platform.style.transform = 'translateY(14px)';
+  });
+
+  names.forEach(name => {
+    name.style.opacity = '0';
+    name.style.transform = 'translateY(8px)';
+  });
+
+  scoreLabels.forEach(score => {
+    score.style.opacity = '0';
+    score.style.transform = 'translateY(8px)';
+  });
+
+  requestAnimationFrame(() => {
+    platforms.forEach((platform, index) => {
+      const rank = Number(platform.closest('.podium-slot')?.dataset.rank || index + 1);
+      platform.animate([
+        { clipPath: 'inset(100% 0 0 0)', opacity: 0.15, transform: 'translateY(14px)' },
+        { opacity: 1, offset: 0.55 },
+        { clipPath: 'inset(0 0 0 0)', opacity: 1, transform: 'translateY(0)' },
+      ], {
+        duration: 820,
+        delay: 60 + (revealDelayByRank[rank] || 0),
+        easing: 'cubic-bezier(0.16, 0.95, 0.22, 1)',
+        fill: 'both',
+      });
+    });
+
+    names.forEach(name => {
+      const rank = Number(name.closest('.podium-slot')?.dataset.rank || 0);
+      const isFirst = rank === 1;
+      const glowColor = getComputedStyle(name).getPropertyValue('--podium-name-glow').trim() || 'rgba(240,180,41,0.65)';
+      const keyframes = isFirst
+        ? [
+            { opacity: 0, transform: 'translateY(10px) scale(0.92)', filter: 'brightness(1) drop-shadow(0 0 0 rgba(240,180,41,0))' },
+            { opacity: 1, transform: 'translateY(0) scale(1.08)', filter: `brightness(1.45) drop-shadow(0 0 14px ${glowColor})`, offset: 0.32 },
+            { opacity: 1, transform: 'translateY(0) scale(1)', filter: `brightness(1.28) drop-shadow(0 0 18px ${glowColor})`, offset: 0.78 },
+            { opacity: 1, transform: 'translateY(0) scale(1)', filter: 'brightness(1) drop-shadow(0 0 0 rgba(240,180,41,0))' },
+          ]
+        : [
+            { opacity: 0, transform: 'translateY(8px)' },
+            { opacity: 1, transform: 'translateY(0)' },
+          ];
+
+      name.animate(keyframes, {
+        duration: isFirst ? 1700 : 420,
+        delay: 780 + (revealDelayByRank[rank] || 0),
+        easing: isFirst ? 'cubic-bezier(0.16, 0.9, 0.24, 1)' : 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+        fill: 'both',
+      });
+    });
+
+    scoreLabels.forEach(score => {
+      const rank = Number(score.closest('.podium-slot')?.dataset.rank || 0);
+      const isFirst = rank === 1;
+      score.animate([
+        { opacity: 0, transform: 'translateY(8px) scale(0.96)' },
+        { opacity: 1, transform: isFirst ? 'translateY(0) scale(1.08)' : 'translateY(0) scale(1)', offset: isFirst ? 0.62 : 1 },
+        { opacity: 1, transform: 'translateY(0) scale(1)' },
+      ], {
+        duration: isFirst ? 620 : 380,
+        delay: 890 + (revealDelayByRank[rank] || 0),
+        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+        fill: 'both',
+      });
+    });
+  });
 }
 
 function renderTable(rows) {
