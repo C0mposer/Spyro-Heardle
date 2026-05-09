@@ -188,7 +188,7 @@ function getRowsForScope(scope) {
 
 function compareRows(a, b) {
   if (lbScope === LB_SCOPES.today) {
-    return Number(!b.todayScore?.won) - Number(!a.todayScore?.won)
+    return Number(!a.todayScore?.won) - Number(!b.todayScore?.won)
       || (a.guesses - b.guesses)
       || (a.totalTimeMs - b.totalTimeMs)
       || a.nickname.localeCompare(b.nickname);
