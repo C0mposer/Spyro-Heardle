@@ -110,7 +110,7 @@ function rankPlayerInScope(player, puzzles, scoreMap) {
   let wins = 0;
   let played = 0;
   let totalTimeMs = 0;
-  let attemptsOnWins = 0;
+  let attemptsForAverage = 0;
   let firstTryWins = 0;
   let todayScore = null;
 
@@ -131,10 +131,11 @@ function rankPlayerInScope(player, puzzles, scoreMap) {
       const attempts = clamp(parseInt(score.attempts_used, 10) || maxAttempts, 1, maxAttempts);
       guesses += attempts;
       wins++;
-      attemptsOnWins += attempts;
+      attemptsForAverage += attempts;
       if (attempts === 1) firstTryWins++;
     } else {
       guesses += maxAttempts + 1;
+      attemptsForAverage += maxAttempts + 1;
     }
   });
 
@@ -145,7 +146,7 @@ function rankPlayerInScope(player, puzzles, scoreMap) {
     played,
     firstTryWins,
     totalTimeMs,
-    avgGuesses: wins ? attemptsOnWins / wins : null,
+    avgGuesses: played ? attemptsForAverage / played : null,
     todayScore,
   };
 }
