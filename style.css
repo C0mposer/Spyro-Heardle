@@ -1439,6 +1439,50 @@ main {
 .your-rank-num   { font-family: var(--font-display); font-size: 1.2rem; font-weight: 900; color: var(--gold-bright); }
 .your-rank-score { font-family: var(--font-display); font-size: 0.7rem; color: var(--text-muted); }
 
+.lb-sync-widget {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: min(420px, calc(100vw - 2rem));
+}
+
+.lb-sync-btn {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: rgba(26,13,46,0.92);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  padding: 0.45em 0.8em;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all var(--transition);
+}
+
+.lb-sync-btn:hover:not(:disabled) {
+  color: var(--gold-bright);
+  border-color: rgba(200,130,10,0.35);
+}
+
+.lb-sync-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.lb-sync-status {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+}
+
 /* Today count badge on main page */
 .today-count-badge {
   display: inline-flex;
@@ -1475,6 +1519,12 @@ main {
   .lb-tabs { display: flex; width: 100%; }
   .lb-tab { flex: 1; padding-left: 0.4em; padding-right: 0.4em; }
   .lb-join-panel { flex-direction: column; align-items: stretch; text-align: center; }
+  .lb-sync-widget {
+    position: static;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    padding: 0 1rem;
+  }
   .col-played, .col-avg, .col-time { display: none; }
   .lb-table th.col-played, .lb-table th.col-avg, .lb-table th.col-time { display: none; }
 }

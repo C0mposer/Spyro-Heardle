@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   bindControls();
   updateIdentityPanel();
+  updateSyncWidget();
   await loadLeaderboard();
 
   refreshTimer = setInterval(loadLeaderboard, 30000);
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function bindControls() {
   document.getElementById('lbRefreshBtn')?.addEventListener('click', loadLeaderboard);
+  document.getElementById('lbSyncBtn')?.addEventListener('click', handleSyncClick);
 
   document.querySelectorAll('.lb-tab').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -60,7 +62,7 @@ function bindControls() {
     initIdentityModal(async () => {
       myPlayerId = Identity.getPlayerId();
       updateIdentityPanel();
-      await submitPastScoresFromLeaderboard();
+      updateSyncWidget();
       await loadLeaderboard();
     });
   });
@@ -241,6 +243,9 @@ function renderPodium(top3) {
 
   el.innerHTML = slots.map(slot => {
     const isMe = slot.data.id === myPlayerId;
+    const playedDetail = lbScope === LB_SCOPES.today
+      ? ''
+      : `<div class="podium-days">${slot.data.played}/${slot.data.puzzleCount} played</div>`;
     return `
       <div class="podium-slot ${slot.cls} ${isMe ? 'podium-me' : ''}">
         <div class="podium-medal">${slot.medal}</div>
@@ -250,7 +255,7 @@ function renderPodium(top3) {
         <div class="podium-platform ${slot.height}">
           <div class="podium-rank-label">${slot.label}</div>
           <div class="podium-first">${slot.data.firstTryWins} first ${slot.data.firstTryWins === 1 ? 'try' : 'tries'}</div>
-          <div class="podium-days">${slot.data.played}/${slot.data.puzzleCount} played</div>
+          ${playedDetail}
           <div class="podium-time">${formatTotalTime(slot.data.totalTimeMs)}</div>
         </div>
       </div>
@@ -352,11 +357,44 @@ function updateIdentityPanel() {
     : 'Choose a unique name to rank this device on the leaderboard.';
 }
 
+function updateSyncWidget() {
+  const widget = document.getElementById('lbSyncWidget');
+  const status = document.getElementById('lbSyncStatus');
+  if (!widget) return;
+
+  widget.classList.toggle('hidden', !myPlayerId);
+  if (status && !myPlayerId) status.textContent = '';
+}
+
+async function handleSyncClick() {
+  const btn = document.getElementById('lbSyncBtn');
+  const status = document.getElementById('lbSyncStatus');
+  if (!btn || !status || !myPlayerId) return;
+
+  btn.disabled = true;
+  status.textContent = 'Syncing...';
+
+  try {
+    const result = await submitPastScoresFromLeaderboard();
+    status.textContent = formatSyncStatus(result);
+    status.title = formatSyncDetails(result);
+    await loadLeaderboard();
+  } catch (e) {
+    status.textContent = `Sync failed: ${friendlySyncError(e)}.`;
+    status.title = e?.message || '';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function submitPastScoresFromLeaderboard() {
-  if (!myPlayerId || typeof loadAllState !== 'function') return;
+  const result = { submitted: 0, skipped: 0, conflicts: [], failures: [] };
+  if (!myPlayerId || typeof loadAllState !== 'function') return result;
 
   const allState = loadAllState();
   const todayDay = getDayNumberForToday(lbConfig);
+  const remoteScores = await DB.getPlayerScores(myPlayerId);
+  const remoteByDay = new Map(remoteScores.map(score => [parseInt(score.day, 10), score]));
 
   for (const [dayStr, state] of Object.entries(allState)) {
     const day = parseInt(dayStr, 10);
@@ -365,18 +403,91 @@ async function submitPastScoresFromLeaderboard() {
     const puzzle = lbConfig.puzzles.find(p => p.day === day);
     if (!puzzle) continue;
 
+    const localScore = {
+      day,
+      attemptsUsed: state.attempts.length,
+      maxAttempts: puzzle.maxAttempts,
+      won: state.attempts.some(a => a.type === 'correct'),
+      timeMs: state.timerFinalMs || null,
+      playedOnDay: true,
+    };
+
+    const remoteScore = remoteByDay.get(day);
+    if (remoteScore) {
+      if (scoresMatch(localScore, remoteScore)) {
+        result.skipped++;
+      } else {
+        result.conflicts.push({
+          day,
+          reason: 'already submitted differently',
+          local: describeLocalScore(localScore),
+          remote: describeRemoteScore(remoteScore),
+        });
+      }
+      continue;
+    }
+
     try {
-      await DB.submitScore({
+      const submitted = await DB.submitScore({
         playerId: myPlayerId,
-        day,
-        attemptsUsed: state.attempts.length,
-        maxAttempts: puzzle.maxAttempts,
-        won: state.attempts.some(a => a.type === 'correct'),
-        timeMs: state.timerFinalMs || null,
-        playedOnDay: true,
+        day: localScore.day,
+        attemptsUsed: localScore.attemptsUsed,
+        maxAttempts: localScore.maxAttempts,
+        won: localScore.won,
+        timeMs: localScore.timeMs,
+        playedOnDay: localScore.playedOnDay,
       });
-    } catch { /* duplicate or offline - skip */ }
+      if (submitted) result.submitted++;
+      else result.conflicts.push({ day, reason: 'already exists remotely' });
+    } catch (e) {
+      result.failures.push({ day, reason: friendlySyncError(e) });
+    }
   }
+
+  return result;
+}
+
+function scoresMatch(local, remote) {
+  return local.attemptsUsed === parseInt(remote.attempts_used, 10)
+    && local.maxAttempts === parseInt(remote.max_attempts, 10)
+    && local.won === Boolean(remote.won);
+}
+
+function describeLocalScore(score) {
+  return score.won ? `local win in ${score.attemptsUsed}` : 'local loss';
+}
+
+function describeRemoteScore(score) {
+  return score.won ? `leaderboard win in ${score.attempts_used}` : 'leaderboard loss';
+}
+
+function formatSyncStatus(result) {
+  const parts = [];
+  if (result.submitted) parts.push(`${result.submitted} synced`);
+  if (result.skipped) parts.push(`${result.skipped} already there`);
+  if (result.conflicts.length) parts.push(`${result.conflicts.length} need admin`);
+  if (result.failures.length) parts.push(`${result.failures.length} failed`);
+  return parts.length ? parts.join(', ') + '.' : 'No local results to sync.';
+}
+
+function formatSyncDetails(result) {
+  const details = [];
+  result.conflicts.forEach(item => {
+    details.push(`#${item.day}: ${item.reason}${item.local && item.remote ? ` (${item.local}; ${item.remote})` : ''}`);
+  });
+  result.failures.forEach(item => {
+    details.push(`#${item.day}: ${item.reason}`);
+  });
+  return details.join('\n');
+}
+
+function friendlySyncError(error) {
+  const message = error?.message || String(error || '');
+  if (/Failed to fetch|NetworkError|Load failed/i.test(message)) return 'network error';
+  if (/row-level security|42501|permission denied/i.test(message)) return 'blocked by database permissions';
+  if (/duplicate|unique/i.test(message)) return 'already exists remotely';
+  if (/JWT|apikey|authorization/i.test(message)) return 'leaderboard auth failed';
+  return 'database rejected the result';
 }
 
 function getRankClass(rank) {

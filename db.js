@@ -25,18 +25,21 @@ const DB = (() => {
     const res = await fetch(`${_url}/rest/v1/${table}?${params}`, {
       headers: headers({ 'Accept': 'application/json' }),
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    const text = await res.text();
+    if (!res.ok) throw new Error(text);
+    return text ? JSON.parse(text) : null;
   }
 
-  async function post(table, body) {
-    const res = await fetch(`${_url}/rest/v1/${table}`, {
+  async function post(table, body, params = '', prefer = 'return=representation') {
+    const query = params ? `?${params}` : '';
+    const res = await fetch(`${_url}/rest/v1/${table}${query}`, {
       method: 'POST',
-      headers: headers({ 'Prefer': 'return=representation' }),
+      headers: headers({ 'Prefer': prefer }),
       body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
+    const text = await res.text();
+    if (!res.ok) throw new Error(text);
+    return text ? JSON.parse(text) : null;
   }
 
   async function patch(table, params, body) {
@@ -92,21 +95,28 @@ const DB = (() => {
 
   async function submitScore({ playerId, day, attemptsUsed, maxAttempts, won, timeMs, playedOnDay }) {
     // Upsert — if score for this day already exists, skip
+    const body = {
+      player_id:     playerId,
+      day,
+      attempts_used: attemptsUsed,
+      max_attempts:  maxAttempts,
+      won,
+      time_ms:       timeMs || null,
+      played_on_day: playedOnDay,
+    };
+
     try {
-      await post('scores', {
-        player_id:     playerId,
-        day,
-        attempts_used: attemptsUsed,
-        max_attempts:  maxAttempts,
-        won,
-        time_ms:       timeMs || null,
-        played_on_day: playedOnDay,
-      });
+      await post('scores', body, 'on_conflict=player_id,day', 'resolution=merge-duplicates,return=minimal');
       return true;
-    } catch (e) {
-      // Unique constraint violation = already submitted, that's fine
-      if (e.message.includes('duplicate') || e.message.includes('unique')) return false;
-      throw e;
+    } catch {
+      try {
+        await post('scores', body, '', 'return=minimal');
+        return true;
+      } catch (insertErr) {
+        const msg = insertErr.message || '';
+        if (msg.includes('duplicate') || msg.includes('unique')) return false;
+        throw insertErr;
+      }
     }
   }
 
