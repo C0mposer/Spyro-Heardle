@@ -574,6 +574,19 @@
         { "label": "Flute", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 38,
+      "answer": "Spyro the Dragon - Tree Tops",
+      "audioFolder": "audio/tree-tops",
+      "stems": [
+        { "label": "Guitar", "file": "Guitar.mp3" },
+        { "label": "Bass", "file": "Guitar + Bass.mp3" },
+        { "label": "Keys", "file": "Guitar + Bass + Keys.mp3" },
+        { "label": "Pad", "file": "Guitar + Bass + Keys + Pad.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
