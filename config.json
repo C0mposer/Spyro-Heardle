@@ -587,6 +587,19 @@
         { "label": "Drums", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 39,
+      "answer": "Spyro the Dragon - Cliff Town",
+      "audioFolder": "audio/cliff",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Organ", "file": "Bass + Organ.mp3" },
+        { "label": "Drums", "file": "Bass + Organ + Drums.mp3" },
+        { "label": "Keys", "file": "Bass + Organ + Drums + Keys.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
     }
   ]
 }
