@@ -600,6 +600,32 @@
         { "label": "Guitar", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
-    }
+    },
+    {
+      "day": 40,
+      "answer": "Spyro the Dragon - Gnasty's Loot",
+      "audioFolder": "audio/loot",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Keys", "file": "Bass + Drums + Keys.mp3" },
+        { "label": "Guitar", "file": "Bass + Drums + Keys + Guitar.mp3" },
+        { "label": "Organ", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 41,
+      "answer": "Spyro the Dragon - Wizard Peak",
+      "audioFolder": "audio/cliff",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
+        { "label": "Keys", "file": "Bass + Drums + Guitar + Keys.mp3" },
+        { "label": "Organ", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
   ]
 }
