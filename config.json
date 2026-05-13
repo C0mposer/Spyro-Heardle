@@ -617,7 +617,7 @@
     {
       "day": 41,
       "answer": "Spyro the Dragon - Wizard Peak",
-      "audioFolder": "audio/cliff",
+      "audioFolder": "audio/wizard-peak",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
         { "label": "Drums", "file": "Bass + Drums.mp3" },
