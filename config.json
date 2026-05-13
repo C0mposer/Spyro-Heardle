@@ -626,6 +626,6 @@
         { "label": "Organ", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
-    },
+    }
   ]
 }
