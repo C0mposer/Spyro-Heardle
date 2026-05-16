@@ -63,6 +63,7 @@
     "Spyro 2: Ripto's Rage - Fracture Hills",
     "Spyro 2: Ripto's Rage - Magma Cone",
     "Spyro 2: Ripto's Rage - Grab the Crystal Popcorn!",
+    "Spyro 2: Ripto's Rage - Trolley Trouble",
     "Spyro 2: Ripto's Rage - Shady Oasis",
     "Spyro 2: Ripto's Rage - Icy Speedway",
     "Spyro 2: Ripto's Rage - Gulp's Overlook",
@@ -655,7 +656,7 @@
     },
     {
       "day": 44,
-      "answer": "Spyro 2: Ripto's Rage - Grab the Crystal Popcorn!",
+      "answer": "Spyro 2: Ripto's Rage - Trolley Trouble",
       "audioFolder": "audio/popcorn",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
