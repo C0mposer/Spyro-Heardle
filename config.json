@@ -62,6 +62,7 @@
     "Spyro 2: Ripto's Rage - Scorch",
     "Spyro 2: Ripto's Rage - Fracture Hills",
     "Spyro 2: Ripto's Rage - Magma Cone",
+    "Spyro 2: Ripto's Rage - Grab the Crystal Popcorn!",
     "Spyro 2: Ripto's Rage - Shady Oasis",
     "Spyro 2: Ripto's Rage - Icy Speedway",
     "Spyro 2: Ripto's Rage - Gulp's Overlook",
@@ -624,6 +625,44 @@
         { "label": "Guitar", "file": "Bass + Drums + Guitar.mp3" },
         { "label": "Keys", "file": "Bass + Drums + Guitar + Keys.mp3" },
         { "label": "Organ", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 42,
+      "answer": "Spyro 2: Ripto's Rage - Magma Cone",
+      "audioFolder": "audio/magma",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
+        { "label": "SFX", "file": "Drums + Bass + Guitar + SFX.mp3" },
+        { "label": "Organ", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 43,
+      "answer": "Spyro: Year of the Dragon - Bentley's Outpost",
+      "audioFolder": "audio/bentley",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Drums", "file": "Bass + Drums.mp3" },
+        { "label": "VOX", "file": "Bass + Drums + VOX.mp3" },
+        { "label": "Full", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 44,
+      "answer": "Spyro 2: Ripto's Rage - Grab the Crystal Popcorn!",
+      "audioFolder": "audio/popcorn",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Keys", "file": "Bass + Keys.mp3" },
+        { "label": "Guitar", "file": "Bass + Keys + Guitar.mp3" },
+        { "label": "Organ", "file": "Bass + Keys + Guitar + Organ.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
     }
