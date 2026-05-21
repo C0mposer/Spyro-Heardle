@@ -727,7 +727,7 @@
         { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
         { "label": "Whistle", "file": "FULL.wav" }
       ],
-      "maxAttempts": 5
+      "maxAttempts": 4
     },
     {
       "day": 50,
