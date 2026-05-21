@@ -63,6 +63,7 @@
     "Spyro 2: Ripto's Rage - Fracture Hills",
     "Spyro 2: Ripto's Rage - Magma Cone",
     "Spyro 2: Ripto's Rage - Grab the Crystal Popcorn!",
+    "Spyro 2: Ripto's Rage - Trolley Trouble",
     "Spyro 2: Ripto's Rage - Shady Oasis",
     "Spyro 2: Ripto's Rage - Icy Speedway",
     "Spyro 2: Ripto's Rage - Gulp's Overlook",
@@ -655,7 +656,7 @@
     },
     {
       "day": 44,
-      "answer": "Spyro 2: Ripto's Rage - Grab the Crystal Popcorn!",
+      "answer": "Spyro 2: Ripto's Rage - Trolley Trouble",
       "audioFolder": "audio/popcorn",
       "stems": [
         { "label": "Bass", "file": "Bass.mp3" },
@@ -665,6 +666,118 @@
         { "label": "Drums", "file": "FULL.wav" }
       ],
       "maxAttempts": 5
+    },
+    {
+      "day": 45,
+      "answer": "Spyro: Year of the Dragon - Dino Mines",
+      "audioFolder": "audio/dino-mines",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Keys", "file": "Bass + Keys.mp3" },
+        { "label": "Organ", "file": "Bass + Keys + Organ.mp3" },
+        { "label": "Drums", "file": "Bass + Keys + Organ + Drums.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 46,
+      "answer": "Spyro the Dragon - Lofty Castle",
+      "audioFolder": "audio/lofty",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "Keys", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 47,
+      "answer": "Spyro: Year of the Dragon - Buzz's Dungeon",
+      "audioFolder": "audio/buzz",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Piano", "file": "Bass + Piano.mp3" },
+        { "label": "Drums", "file": "Bass + Piano + Drums.mp3" },
+        { "label": "Strings", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 48,
+      "answer": "Spyro the Dragon - Beast Makers",
+      "audioFolder": "audio/bm",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Guitar", "file": "Drums + Guitar.mp3" },
+        { "label": "Bass", "file": "Drums + Guitar + Bass.mp3" },
+        { "label": "SFX", "file": "Drums + Guitar + Bass + SFX.mp3" },
+        { "label": "Keys", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 49,
+      "answer": "Spyro 2: Ripto's Rage - Canyon Speedway",
+      "audioFolder": "audio/canyon",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Drums", "file": "Bass + Guitar + Drums.mp3" },
+        { "label": "Whistle", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 50,
+      "answer": "Spyro the Dragon - Blowhard",
+      "audioFolder": "audio/Blowhard",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Guitar", "file": "Drums + Bass + Guitar.mp3" },
+        { "label": "Organ", "file": "Drums + Bass + Guitar + Organ.mp3" },
+        { "label": "Guitar 2 + Keys", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 51,
+      "answer": "Spyro 2: Ripto's Rage - Ocean Speedway",
+      "audioFolder": "audio/ocean",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Bass", "file": "Drums + Bass.mp3" },
+        { "label": "Keys", "file": "Drums + Bass + Keys.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
+    },
+    {
+      "day": 52,
+      "answer": "Spyro the Dragon - Gnasty Gnorc",
+      "audioFolder": "audio/gnasty-gnorc",
+      "stems": [
+        { "label": "Bass", "file": "Bass.mp3" },
+        { "label": "Guitar", "file": "Bass + Guitar.mp3" },
+        { "label": "Keys", "file": "Bass + Guitar + Keys.mp3" },
+        { "label": "Organ", "file": "Bass + Guitar + Keys + Organ.mp3" },
+        { "label": "Drums", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 5
+    },
+    {
+      "day": 53,
+      "answer": "Spyro: Year of the Dragon - Honey Speedway",
+      "audioFolder": "audio/honey",
+      "stems": [
+        { "label": "Drums", "file": "Drums.mp3" },
+        { "label": "Synth", "file": "Drums + Synth.mp3" },
+        { "label": "Bass", "file": "Drums + Synth + Bass.mp3" },
+        { "label": "Guitar", "file": "FULL.wav" }
+      ],
+      "maxAttempts": 4
     }
   ]
 }
