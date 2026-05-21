@@ -21,6 +21,8 @@ const DB = (() => {
     };
   }
 
+  const PAGE_SIZE = 1000;
+
   async function get(table, params = '') {
     const res = await fetch(`${_url}/rest/v1/${table}?${params}`, {
       headers: headers({ 'Accept': 'application/json' }),
@@ -28,6 +30,30 @@ const DB = (() => {
     const text = await res.text();
     if (!res.ok) throw new Error(text);
     return text ? JSON.parse(text) : null;
+  }
+
+  /** Fetch all rows; Supabase caps each response at PAGE_SIZE (default 1000). */
+  async function getAll(table, params = '') {
+    const all = [];
+    let offset = 0;
+
+    while (true) {
+      const qs = params ? `${params}&` : '';
+      const res = await fetch(
+        `${_url}/rest/v1/${table}?${qs}limit=${PAGE_SIZE}&offset=${offset}`,
+        { headers: headers({ 'Accept': 'application/json', 'Prefer': 'count=exact' }) },
+      );
+      const text = await res.text();
+      if (!res.ok) throw new Error(text);
+      const batch = text ? JSON.parse(text) : [];
+      all.push(...batch);
+
+      const total = parseInt((res.headers.get('Content-Range') || '').split('/')[1], 10);
+      if (!batch.length || batch.length < PAGE_SIZE || (total && all.length >= total)) break;
+      offset += PAGE_SIZE;
+    }
+
+    return all;
   }
 
   async function post(table, body, params = '', prefer = 'return=representation') {
@@ -138,11 +164,14 @@ const DB = (() => {
   }
 
   async function getLeaderboardPlayers() {
-    return get('players', 'select=id,nickname,is_banned&is_banned=eq.false&order=nickname.asc&limit=10000');
+    return getAll('players', 'select=id,nickname,is_banned&is_banned=eq.false&order=nickname.asc');
   }
 
   async function getLeaderboardScores() {
-    return get('scores', 'select=player_id,day,attempts_used,max_attempts,won,time_ms,played_on_day&limit=10000');
+    return getAll(
+      'scores',
+      'select=player_id,day,attempts_used,max_attempts,won,time_ms,played_on_day&order=day.asc,player_id.asc',
+    );
   }
 
   async function getTodayCount() {
